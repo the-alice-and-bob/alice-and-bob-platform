@@ -22,7 +22,7 @@ config = {
 if CELERY_BACKEND:
     config['result_backend'] = CELERY_BACKEND
 
-if CELERY_BROKER_URL.startswith('rediss') or CELERY_BACKEND.startswith('rediss'):
+if CELERY_BROKER_URL.startswith('rediss') or CELERY_BACKEND:
     config['broker_use_ssl'] = {
         'ssl_cert_reqs': ssl.CERT_NONE
     }
