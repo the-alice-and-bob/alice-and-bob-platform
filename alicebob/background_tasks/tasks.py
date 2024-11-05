@@ -59,3 +59,5 @@ def inoreader_distributor(webhook_content: dict):
 
     except Exception as e:
         notify_pushover("Error processing InoReader feed", str(e))
+    finally:
+        notify_pushover("Feed processed", "InoReader feed processed")
