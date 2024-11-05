@@ -14,7 +14,7 @@ requests = "^2.32.3"
 anthropic = "^0.39.0"
 html2text-rs = "^0.2.0"
 flask = "^3.0.3"
-celery = {extras = ["gevent", "redis"], version = "^5.4.0"}
+celery = {extras = ["librabbitmq", "redis"], version = "^5.4.0"}
 gevent = "^24.10.3"
 gunicorn = "^23.0.0"
 python-decouple = "^3.8"

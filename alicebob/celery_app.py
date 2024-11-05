@@ -8,22 +8,33 @@ import sentry_sdk
 
 from celery import Celery, signals
 
-REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+# CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'amqp://guest:guest@localhost:5672//')
+CELERY_BACKEND = os.environ.get('CELERY_BACKEND_URL', None)
 
-if not REDIS_URL:
-    raise ValueError("REDIS_URL is not defined")
+if not CELERY_BROKER_URL:
+    raise ValueError("CELERY_BROKER_URL is not defined")
+
+config = {
+    'CELERY_BROKER_URL': CELERY_BROKER_URL,
+}
+
+if CELERY_BACKEND:
+    config['result_backend'] = CELERY_BACKEND
+
+if CELERY_BROKER_URL.startswith('rediss') or CELERY_BACKEND.startswith('rediss'):
+    config['broker_use_ssl'] = {
+        'ssl_cert_reqs': ssl.CERT_NONE
+    }
+    config['redis_backend_use_ssl'] = {
+        'ssl_cert_reqs': ssl.CERT_NONE
+    }
+
 
 # Configuración de Celery independiente de Flask
 app_celery = Celery(
     'alicebob',
-    broker=REDIS_URL,
-    backend=REDIS_URL,
-    broker_use_ssl={
-        'ssl_cert_reqs': ssl.CERT_NONE
-    },
-    redis_backend_use_ssl={
-        'ssl_cert_reqs': ssl.CERT_NONE
-    },
+    **config
 )
 
 app_celery.conf.update(

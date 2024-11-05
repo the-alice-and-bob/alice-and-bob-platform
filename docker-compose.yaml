@@ -7,7 +7,7 @@ services:
     environment:
       - URL_TOKEN=${URL_TOKEN}
       - FORCE_PROCESS_FEEDS=true
-      - REDIS_URL=redis://redis:6379/1
+      - CELERY_BROKER_URL=redis://redis:6379/1
       - PUSHOVER_TOKEN=${PUSHOVER_TOKEN}
       - PUSHOVER_USER=${PUSHOVER_USER}
       - SENTRY_DSN=${SENTRY_DSN}
@@ -28,7 +28,8 @@ services:
       - SUMMARY_MIN_WORDS=100
       - SUMMARY_MAX_WORDS=150
       - LLM_ENGINE=anthropic
-      - REDIS_URL=redis://redis:6379/1
+#      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
       - PUSHOVER_TOKEN=${PUSHOVER_TOKEN}
       - PUSHOVER_USER=${PUSHOVER_USER}
       - SENTRY_DSN=${SENTRY_DSN}
@@ -48,6 +49,17 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - redis-net
+
+  rabbitmq:
+    image: rabbitmq:3
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
     networks:
       - redis-net
 
