@@ -1,0 +1,46 @@
+{
+  "rule": {
+    "name": "Tull",
+    "matchesToday": "2",
+    "matchesTotal": "2"
+  },
+  "items": [
+    {
+      "crawlTimeMsec": "1727808146845",
+      "timestampUsec": "1727808146845147",
+      "id": "tag:google.com,2005:reader/item/00000009f311562a",
+      "categories": [
+        "user/1003836005/state/com.google/reading-list",
+        "user/1003836005/state/com.google/read"
+      ],
+      "title": "Exploiting trust: Weaponizing permissive CORS configurations",
+      "published": 1727790581,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.reddit.com/r/netsec/comments/1ftokay/exploiting_trust_weaponizing_permissive_cors/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.reddit.com/r/netsec/comments/1ftokay/exploiting_trust_weaponizing_permissive_cors/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "submitted by   <a href=\"https://www.reddit.com/user/AlmondOffSec\"> /u/AlmondOffSec </a> <br> <span><a href=\"https://outpost24.com/blog/exploiting-permissive-cors-configurations/\">[link]</a></span>   <span><a href=\"https://www.reddit.com/r/netsec/comments/1ftokay/exploiting_trust_weaponizing_permissive_cors/\">[comments]</a></span>"
+      },
+      "author": "/u/AlmondOffSec",
+      "likingUsers": [ ],
+      "comments": [ ],
+      "commentsNum": -1,
+      "annotations": [ ],
+      "origin": {
+        "streamId": "feed/https://www.reddit.com/r/netsec/.rss",
+        "title": "/r/netsec - Information Security News & Discussion",
+        "htmlUrl": "https://www.reddit.com/r/netsec/"
+      }
+    }
+  ]
+}

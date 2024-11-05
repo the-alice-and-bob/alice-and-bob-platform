@@ -1,0 +1,46 @@
+{
+  "rule": {
+    "name": "To Notion",
+    "matchesToday": null,
+    "matchesTotal": "0"
+  },
+  "items": [
+    {
+      "crawlTimeMsec": "1729482795727",
+      "timestampUsec": "1729482795726752",
+      "id": "tag:google.com,2005:reader/item/00000009fefcd2bb",
+      "categories": [
+        "user/1003836005/state/com.google/reading-list",
+        "user/1003836005/state/com.google/read"
+      ],
+      "title": "Attacking APIs using JSON Injection",
+      "published": 1729475874,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.reddit.com/r/netsec/comments/1g8ey01/attacking_apis_using_json_injection/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.reddit.com/r/netsec/comments/1g8ey01/attacking_apis_using_json_injection/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "submitted by   <a href=\"https://www.reddit.com/user/alt69785\"> /u/alt69785 </a> <br> <span><a href=\"https://danaepp.com/attacking-apis-using-json-injection\">[link]</a></span>   <span><a href=\"https://www.reddit.com/r/netsec/comments/1g8ey01/attacking_apis_using_json_injection/\">[comments]</a></span>"
+      },
+      "author": "/u/alt69785",
+      "likingUsers": [ ],
+      "comments": [ ],
+      "commentsNum": -1,
+      "annotations": [ ],
+      "origin": {
+        "streamId": "feed/https://www.reddit.com/r/netsec/.rss",
+        "title": "/r/netsec - Information Security News & Discussion",
+        "htmlUrl": "https://www.reddit.com/r/netsec/"
+      }
+    }
+  ]
+}

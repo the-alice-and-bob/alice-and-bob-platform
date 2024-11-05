@@ -1,0 +1,41 @@
+services:
+
+  webhooks:
+    image: alicebob:latest
+    env_file:
+      - .compose_env
+    ports:
+      - "8000:8080"
+    entrypoint: "/entrypoint-web"
+    networks:
+      - redis-net
+
+  workers:
+    image: alicebob:latest
+    env_file:
+      - .compose_env
+    entrypoint: "/entrypoint-celery-worker"
+    networks:
+      - redis-net
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6400:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - redis-net
+
+networks:
+  redis-net:
+
+volumes:
+    vault-file:
+    minio_data:

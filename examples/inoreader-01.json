@@ -1,0 +1,46 @@
+{
+  "rule": {
+    "name": "To Notion",
+    "matchesToday": null,
+    "matchesTotal": "0"
+  },
+  "items": [
+    {
+      "crawlTimeMsec": "1729150464622",
+      "timestampUsec": "1729150464621798",
+      "id": "tag:google.com,2005:reader/item/00000009fcc25b48",
+      "categories": [
+        "user/1003836005/state/com.google/reading-list",
+        "user/1003836005/state/com.google/read"
+      ],
+      "title": "Escaping the Chrome Sandbox Through DevTools",
+      "published": 1729145174,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.reddit.com/r/netsec/comments/1g5k9ke/escaping_the_chrome_sandbox_through_devtools/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.reddit.com/r/netsec/comments/1g5k9ke/escaping_the_chrome_sandbox_through_devtools/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "submitted by   <a href=\"https://www.reddit.com/user/vk6_\"> /u/vk6_ </a> <br> <span><a href=\"https://ading.dev/blog/posts/chrome_sandbox_escape.html\">[link]</a></span>   <span><a href=\"https://www.reddit.com/r/netsec/comments/1g5k9ke/escaping_the_chrome_sandbox_through_devtools/\">[comments]</a></span>"
+      },
+      "author": "/u/vk6_",
+      "likingUsers": [ ],
+      "comments": [ ],
+      "commentsNum": -1,
+      "annotations": [ ],
+      "origin": {
+        "streamId": "feed/https://www.reddit.com/r/netsec/.rss",
+        "title": "/r/netsec - Information Security News & Discussion",
+        "htmlUrl": "https://www.reddit.com/r/netsec/"
+      }
+    }
+  ]
+}
