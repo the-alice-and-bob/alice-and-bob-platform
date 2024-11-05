@@ -17,7 +17,9 @@ def summarize_with_ia(
     :param additional_prompt: Additional prompt to include in the request
     :param model: Model to use
     """
-    return [], "", "", {}
+
+    if decouple.config("DISABLE_LLM", default=False, cast=bool):
+        return [], "", "", {}
 
     llm_engine = decouple.config("LLM_ENGINE", default="anthropic")
 
