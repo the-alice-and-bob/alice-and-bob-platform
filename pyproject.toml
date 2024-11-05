@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "AliceBob"
+version = "0.1.0"
+description = ""
+authors = ["Alice & Bob Yeam <hello@alicebob.io>"]
+packages = [{ include = "alicebob"}]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+notion-client = "^2.2.1"
+lxml = "^5.3.0"
+requests = "^2.32.3"
+anthropic = "^0.39.0"
+html2text-rs = "^0.2.0"
+flask = "^3.0.3"
+celery = {extras = ["gevent", "redis"], version = "^5.4.0"}
+gevent = "^24.10.3"
+gunicorn = "^23.0.0"
+python-decouple = "^3.8"
+orjson = "^3.10.11"
+ollama = "^0.3.3"
+sentry-sdk = {extras = ["celery", "flask"], version = "^2.18.0"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
