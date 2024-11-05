@@ -4,6 +4,13 @@ services:
     image: alicebob:latest
     env_file:
       - .compose_env
+    environment:
+      - URL_TOKEN=${URL_TOKEN}
+      - FORCE_PROCESS_FEEDS=true
+      - REDIS_URL=redis://redis:6379/1
+      - PUSHOVER_TOKEN=${PUSHOVER_TOKEN}
+      - PUSHOVER_USER=${PUSHOVER_USER}
+      - SENTRY_DSN=${SENTRY_DSN}
     ports:
       - "8000:8080"
     entrypoint: "/entrypoint-web"
@@ -14,6 +21,17 @@ services:
     image: alicebob:latest
     env_file:
       - .compose_env
+    environment:
+      - NOTION_TOKEN=${NOTION_TOKEN}
+      - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - SUMMARY_MIN_WORDS=100
+      - SUMMARY_MAX_WORDS=150
+      - LLM_ENGINE=anthropic
+      - REDIS_URL=redis://redis:6379/1
+      - PUSHOVER_TOKEN=${PUSHOVER_TOKEN}
+      - PUSHOVER_USER=${PUSHOVER_USER}
+      - SENTRY_DSN=${SENTRY_DSN}
     entrypoint: "/entrypoint-celery-worker"
     networks:
       - redis-net

@@ -1,8 +1,23 @@
 import decouple
+import sentry_sdk
 
 from flask import Flask, request, jsonify
 
 from alicebob.celery_app import app_celery
+
+sentry_sdk.init(
+    dsn=decouple.config('SENTRY_DSN'),
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for tracing.
+    traces_sample_rate=1.0,
+    _experiments={
+        # Set continuous_profiling_auto_start to True
+        # to automatically start the profiler on when
+        # possible.
+        "continuous_profiling_auto_start": True,
+    },
+)
+
 
 app = Flask(__name__)
 app.config['SECRET_TOKEN'] = "ec752ee9a72048bba515a5304935e5cd206eada27e984596b82d18fa8489f5ec"
