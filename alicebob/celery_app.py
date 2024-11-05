@@ -1,4 +1,5 @@
 import os
+import ssl
 
 from pathlib import Path
 
@@ -16,7 +17,13 @@ if not REDIS_URL:
 app_celery = Celery(
     'alicebob',
     broker=REDIS_URL,
-    backend=REDIS_URL
+    backend=REDIS_URL,
+    broker_use_ssl={
+        'ssl_cert_reqs': ssl.CERT_NONE
+    },
+    redis_backend_use_ssl={
+        'ssl_cert_reqs': ssl.CERT_NONE
+    },
 )
 
 app_celery.conf.update(
