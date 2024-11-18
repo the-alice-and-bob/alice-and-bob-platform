@@ -1,0 +1,54 @@
+services:
+
+  webhooks:
+    image: alicebob:latest
+    environment:
+      - URL_TOKEN=${URL_TOKEN}
+      - FORCE_PROCESS_FEEDS=true
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - PUSHOVER_TOKEN=${PUSHOVER_TOKEN}
+      - PUSHOVER_USER=${PUSHOVER_USER}
+      - SENTRY_DSN=${SENTRY_DSN}
+    ports:
+      - "8000:8080"
+    entrypoint: "/entrypoint-web"
+    networks:
+      - redis-net
+
+  workers:
+    image: alicebob:latest
+    environment:
+      - NOTION_TOKEN=${NOTION_TOKEN}
+      - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - SUMMARY_MIN_WORDS=100
+      - SUMMARY_MAX_WORDS=150
+      - LLM_ENGINE=anthropic
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - PUSHOVER_TOKEN=${PUSHOVER_TOKEN}
+      - PUSHOVER_USER=${PUSHOVER_USER}
+      - SENTRY_DSN=${SENTRY_DSN}
+    entrypoint: "/entrypoint-celery-worker"
+    networks:
+      - redis-net
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  rabbitmq:
+    image: cloudamqp/lavinmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+    networks:
+      - redis-net
+
+networks:
+  rabbitmq-net:
+
+volumes:
+    vault-file:
+    minio_data:
