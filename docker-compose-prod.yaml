@@ -1,7 +1,9 @@
 services:
 
   webhooks:
-    image: alicebob:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       - URL_TOKEN=${URL_TOKEN}
       - FORCE_PROCESS_FEEDS=true
@@ -16,7 +18,9 @@ services:
       - rabbitmq-net
 
   workers:
-    image: alicebob:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       - NOTION_TOKEN=${NOTION_TOKEN}
       - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
@@ -33,7 +37,7 @@ services:
       - rabbitmq-net
 
   rabbitmq:
-    image: cloudamqp/lavinmq
+    image: cloudamqp/lavinmq:latest
     ports:
       - "5672:5672"
       - "15672:15672"
