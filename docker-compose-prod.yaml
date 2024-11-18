@@ -43,7 +43,7 @@ services:
     networks:
       - rabbitmq-net
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      test: ["CMD", "/usr/bin/lavinmqctl", "status"]
 
 networks:
   rabbitmq-net:
