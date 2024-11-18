@@ -13,7 +13,7 @@ services:
       - "8000:8080"
     entrypoint: "/entrypoint-web"
     networks:
-      - redis-net
+      - rabbitmq-net
 
   workers:
     image: alicebob:latest
@@ -30,7 +30,7 @@ services:
       - SENTRY_DSN=${SENTRY_DSN}
     entrypoint: "/entrypoint-celery-worker"
     networks:
-      - redis-net
+      - rabbitmq-net
     depends_on:
       redis:
         condition: service_healthy
@@ -44,7 +44,7 @@ services:
       RABBITMQ_DEFAULT_USER: "guest"
       RABBITMQ_DEFAULT_PASS: "guest"
     networks:
-      - redis-net
+      - rabbitmq-net
 
 networks:
   rabbitmq-net:
