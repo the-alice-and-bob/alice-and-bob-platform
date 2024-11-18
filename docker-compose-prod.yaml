@@ -31,9 +31,6 @@ services:
     entrypoint: "/entrypoint-celery-worker"
     networks:
       - rabbitmq-net
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
 
   rabbitmq:
     image: cloudamqp/lavinmq
