@@ -1,9 +1,7 @@
 services:
 
   webhooks:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/alicebob/alicebob:latest
     environment:
       - URL_TOKEN=${URL_TOKEN}
       - FORCE_PROCESS_FEEDS=true
@@ -18,9 +16,7 @@ services:
       - rabbitmq-net
 
   workers:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/alicebob/alicebob:latest
     environment:
       - NOTION_TOKEN=${NOTION_TOKEN}
       - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
