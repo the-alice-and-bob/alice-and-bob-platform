@@ -1,0 +1,19 @@
+packages:
+  - name: alicebob
+    environment: {}
+    actions:
+
+      - name: inoreader
+        runtime: python:3.11
+        web: true
+        webSecure: "Fh7CVSeRooVuQym"
+        limits:
+          timeout: 90000
+          memory: 512
+
+      - name: redirection
+        runtime: python:3.11
+        web: true
+        limits:
+          timeout: 5000
+          memory: 128

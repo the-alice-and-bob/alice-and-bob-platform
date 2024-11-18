@@ -24,3 +24,5 @@ RUN chmod +x /entrypoint*
 
 COPY ./alicebob /alicebob
 RUN chown -R alicebob:alicebob /alicebob
+
+WORKDIR /alicebob

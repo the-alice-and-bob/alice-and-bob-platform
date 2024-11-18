@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head></head>
+<body>
+     <div style="min-width:100%;width:100%;background-color:#f1f5f9">
+      <table align="center" style="border:0;border-collapse:collapse;margin:0 auto!important;padding:0;max-width:600px;min-width:600px;width:600px">
+        <tbody>
+        <tr>
+          <td style="border:0;border-collapse:collapse;margin:0;padding:0">
+            <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0">
+              <tbody>
+                <tr>
+                  <td height="20" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px">&nbsp;</td>
+                 </tr>
+              </tbody>
+            </table>
+
+          <div style="border-bottom-left-radius:5px;border-bottom-right-radius:5px">
+
+             <!-- logo img table -->
+              <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0;background-color:#ffffff">
+                <tbody>
+                   <tr>
+                    <td height="50" width="50">
+
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="64" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px">&nbsp;</td>
+                    <td align="center" style="border:0;border-collapse:collapse;margin:0;padding:0;width:472px;vertical-align:middle;color:#32325d;font-size: 0;line-height:0;">
+                       <img style="display:block;line-height:0px;font-size:0px;border:0px;" {{#if logo}}src="{{logo}}" {{else}}src="{{logo}}"{{/if}} width="100" height="auto" alt="logo">
+                    </td>
+                    <td width="64" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px">&nbsp;</td>
+                  </tr>
+
+                   <tr>
+                    <td height="20" width="50"></td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- logo img table-->
+
+                <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0;background-color:#ffffff">
+                  <tbody>
+                  <tr>
+                    <td width="64" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px">&nbsp;</td>
+                    <td align="center" style="border:0;border-collapse:collapse;margin:0;padding:0;width:472px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Ubuntu,sans-serif;vertical-align:middle;color:#32325d;font-size: 15px;line-height: 24px;font-weight: 500;">
+                       Ey {{full_name}},
+                    </td>
+                    <td width="64" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px">&nbsp;</td>
+                  </tr>
+                  </tbody>
+                </table>
+
+                <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0;background-color:#ffffff">
+                  <tbody>
+                  <tr>
+                    <td width="64" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px">&nbsp;</td>
+                    <td align="center" style="border:0;border-collapse:collapse;margin:0;padding:0;width:472px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Ubuntu,sans-serif;vertical-align:middle;color:#32325d;font-size: 15px;line-height:22px;font-weight: 500;">
+                        Queríamos informarte de que la inscripción a su evento {{event_name}} ha sido confirmada y está programada a las {{event_time}}.
+                    </td>
+                    <td width="64" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px">&nbsp;</td>
+                  </tr>
+                  </tbody>
+                </table>
+
+                  <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0;background-color:#ffffff;display: none;">
+                    <tbody>
+                      <tr>
+                        <td height="8" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px">&nbsp;</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0;background-color:#ffffff">
+                  <tbody>
+                    <tr>
+                      <td height="18" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px">&nbsp;</td>
+                     </tr>
+                  </tbody>
+                </table>
+
+
+                 <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0;background-color:#ffffff">
+                  <tbody>
+                    <tr>
+                      {{#if event_link}}
+                       <td align="center" style="border:0;border-collapse:collapse;margin:0;padding:0;width:472px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Ubuntu,sans-serif;vertical-align:middle;color:#32325d;font-size: 15px;line-height:20px;font-weight: 500;">
+                           Consulta el evento en -
+                        <a style="color:#fc5a5a" href="{{event_link}} " rel="noopener" target="_blank"><span style="line-height:21px"><strong>{{event_link}}</strong></span>
+                        </a>
+                      </td>
+                      {{else }}
+                      <td align="center" style="border:0;border-collapse:collapse;margin:0;padding:0;width:472px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Ubuntu,sans-serif;vertical-align:middle;color:#32325d;font-size: 15px;line-height:20px;font-weight: 500;">
+                        Consulta el evento en - {{location}}
+                      </td>
+                      {{/if}}
+                    </tr>
+                 </tbody>
+                 </table>
+
+                  <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0;background-color:#ffffff">
+                  <tbody>
+                    <tr>
+                      <td height="20" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px">&nbsp;</td>
+                     </tr>
+                  </tbody>
+                </table>
+
+
+                  <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0;background-color:#ffffff">
+                  <tbody>
+                    <tr>
+                       <td align="center" style="border:0;border-collapse:collapse;margin:0;padding:0;width:472px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Ubuntu,sans-serif;vertical-align:middle;color:#32325d;font-size: 15px;line-height:20px;font-weight: 500;">
+                       Gracias,
+                    </td>
+                    </tr>
+                 </tbody>
+                 </table>
+
+                 <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0;background-color:#ffffff">
+                  <tbody>
+                    <tr>
+                       <td align="center" style="border:0;border-collapse:collapse;margin:0;padding:0;width:472px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Ubuntu,sans-serif;vertical-align:middle;color:#32325d;font-size: 15px;line-height:20px;font-weight: 500;">
+                      {{#if site_name}}
+                          {{site_name}}
+                      {{else}}
+                          The EzyCourse team
+                      {{/if}}
+                    </td>
+                    </tr>
+                 </tbody>
+                 </table>
+
+
+                  <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0;background-color:#ffffff"><tbody><tr><td height="32" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px;height: 20px;">&nbsp;</td></tr></tbody></table>
+
+                   <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0;background-color:#ffffff;border-bottom-left-radius:5px;border-bottom-right-radius:5px">
+                  <tbody>
+                    <tr>
+                      <td height="40" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px">&nbsp;</td>
+                </tr>
+                </tbody>
+                </table>
+
+                </div>
+
+                 <table width="100%" style="border:0;border-collapse:collapse;margin:0;padding:0">
+                  <tbody>
+                    <tr>
+                      <td height="40" style="border:0;border-collapse:collapse;margin:0;padding:0;color:#ffffff;font-size:1px;line-height:1px">&nbsp;</td>
+                     </tr>
+                  </tbody>
+                </table>
+                </td>
+            </tr>
+           </tbody>
+           </table>
+        </div>
+
+</body>
+</html>

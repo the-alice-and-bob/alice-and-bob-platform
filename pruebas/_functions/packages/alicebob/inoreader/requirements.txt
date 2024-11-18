@@ -1,0 +1,5 @@
+lxml
+requests
+anthropic
+html2text_rs
+notion-client
