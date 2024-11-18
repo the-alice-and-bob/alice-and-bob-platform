@@ -18,6 +18,7 @@ services:
   workers:
     image: ghcr.io/the-alice-and-bob/alicebob:latest
     environment:
+      - URL_TOKEN=${URL_TOKEN}
       - NOTION_TOKEN=${NOTION_TOKEN}
       - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
