@@ -1,7 +1,9 @@
 services:
 
   webhooks:
-    image: alicebob:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     env_file:
       - .compose_env
     environment:
@@ -18,10 +20,13 @@ services:
       - rabbitmq-net
 
   workers:
-    image: alicebob:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     env_file:
       - .compose_env
     environment:
+      - URL_TOKEN=${URL_TOKEN}
       - NOTION_TOKEN=${NOTION_TOKEN}
       - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
@@ -51,7 +56,7 @@ services:
       - rabbitmq-net
 
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      test: ["CMD", "/usr/bin/lavinmqctl", "status"]
 
 networks:
   rabbitmq-net:
