@@ -10,7 +10,7 @@ services:
       - PUSHOVER_USER=${PUSHOVER_USER}
       - SENTRY_DSN=${SENTRY_DSN}
     ports:
-      - "8000:8080"
+      - "8080:8080"
     entrypoint: "/entrypoint-web"
     networks:
       - rabbitmq-net
