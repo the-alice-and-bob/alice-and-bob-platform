@@ -7,7 +7,7 @@ services:
     environment:
       - URL_TOKEN=${URL_TOKEN}
       - FORCE_PROCESS_FEEDS=true
-      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
       - PUSHOVER_TOKEN=${PUSHOVER_TOKEN}
       - PUSHOVER_USER=${PUSHOVER_USER}
       - SENTRY_DSN=${SENTRY_DSN}
