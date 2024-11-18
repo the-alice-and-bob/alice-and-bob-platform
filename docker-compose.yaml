@@ -36,7 +36,7 @@ services:
     networks:
       - rabbitmq-net
     depends_on:
-      redis:
+      rabbitmq:
         condition: service_healthy
 
   rabbitmq:
@@ -49,6 +49,9 @@ services:
       RABBITMQ_DEFAULT_PASS: "guest"
     networks:
       - rabbitmq-net
+
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
 
 networks:
   rabbitmq-net:
