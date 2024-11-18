@@ -4,7 +4,7 @@ import decouple
 
 from notion_client import Client
 
-from alicebob.alicebob_sdk import SummarizedNews, News
+from alicebob_sdk import SummarizedNews, News
 
 NOTION_TOKEN = decouple.config("NOTION_TOKEN")
 NOTION_DATABASE_ID = decouple.config("NOTION_DATABASE_ID")

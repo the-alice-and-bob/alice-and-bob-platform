@@ -3,25 +3,25 @@ services:
   webhooks:
     build:
       context: .
+      no_cache: true
       dockerfile: Dockerfile
     env_file:
       - .compose_env
     environment:
       - URL_TOKEN=${URL_TOKEN}
       - FORCE_PROCESS_FEEDS=true
-      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - CELERY_BROKER_URL=amqps://pqmuucdf:TlakapFN080P-bGAuafNlDgSeIXNwEQv@kebnekaise.lmq.cloudamqp.com/pqmuucdf
       - PUSHOVER_TOKEN=${PUSHOVER_TOKEN}
       - PUSHOVER_USER=${PUSHOVER_USER}
       - SENTRY_DSN=${SENTRY_DSN}
     ports:
       - "8000:8080"
     entrypoint: "/entrypoint-web"
-    networks:
-      - rabbitmq-net
 
   workers:
     build:
       context: .
+      no_cache: true
       dockerfile: Dockerfile
     env_file:
       - .compose_env
@@ -33,30 +33,11 @@ services:
       - SUMMARY_MIN_WORDS=100
       - SUMMARY_MAX_WORDS=150
       - LLM_ENGINE=anthropic
-      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - CELERY_BROKER_URL=amqps://pqmuucdf:TlakapFN080P-bGAuafNlDgSeIXNwEQv@kebnekaise.lmq.cloudamqp.com/pqmuucdf
       - PUSHOVER_TOKEN=${PUSHOVER_TOKEN}
       - PUSHOVER_USER=${PUSHOVER_USER}
       - SENTRY_DSN=${SENTRY_DSN}
     entrypoint: "/entrypoint-celery-worker"
-    networks:
-      - rabbitmq-net
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-
-  rabbitmq:
-    image: cloudamqp/lavinmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: "guest"
-      RABBITMQ_DEFAULT_PASS: "guest"
-    networks:
-      - rabbitmq-net
-
-    healthcheck:
-      test: ["CMD", "/usr/bin/lavinmqctl", "status"]
 
 networks:
   rabbitmq-net:
