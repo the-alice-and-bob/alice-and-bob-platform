@@ -25,8 +25,8 @@ COPY ./entrypoint-celery-worker.sh /entrypoint-celery-worker
 RUN chmod +x /entrypoint*
 
 COPY ./alicebob /alicebob
-COPY ./awesome_zohocrm /awesome_zohocrm
-COPY ./ezycourse /ezycourse
+COPY ./awesome_zohocrm /alicebob/awesome_zohocrm
+COPY ./ezycourse /alicebob/ezycourse
 RUN chown -R alicebob:alicebob /alicebob /awesome_zohocrm /ezycourse
 
 WORKDIR /alicebob
