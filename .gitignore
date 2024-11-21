@@ -242,3 +242,5 @@ cython_debug/
 .idea/
 _old/
 pruebas/
+/_old/
+/pruebas/
