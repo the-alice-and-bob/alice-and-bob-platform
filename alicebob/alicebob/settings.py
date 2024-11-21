@@ -30,7 +30,6 @@ SECRET_KEY = '7be4a07985cd0492d1fab2b2e3a3f54e9f88747adfd7096149143e4909d5f5e2e3
 DEBUG = decouple.config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    'localhost',
     '*'
 ]
 

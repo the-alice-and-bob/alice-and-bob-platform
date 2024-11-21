@@ -1,16 +1,11 @@
-FROM python:3.12-alpine AS base
+FROM python:3.12-alpine
 
 RUN addgroup -S alicebob && \
     adduser -S -G alicebob -s /bin/false alicebob && \
-    apk update && apk upgrade && apk add --no-cache curl
+    apk update && apk upgrade && apk add --no-cache curl && \
+    mkdir /staticfiles /data
 
-FROM base AS development
-
-# Disable virtualenv creation
 ENV POETRY_VIRTUALENVS_CREATE=false
-
-#RUN apk add build-base libffi-dev openssl-dev && \
-#    pip install --disable-pip-version-check --no-cache-dir -U pip poetry
 
 RUN pip install --disable-pip-version-check --no-cache-dir -U pip poetry
 
@@ -27,7 +22,8 @@ RUN chmod +x /entrypoint*
 COPY ./alicebob /alicebob
 COPY ./awesome_zohocrm /alicebob/awesome_zohocrm
 COPY ./ezycourse /alicebob/ezycourse
-RUN chown -R alicebob:alicebob /alicebob
+RUN chown -R alicebob:alicebob /alicebob /staticfiles /data
 
 WORKDIR /alicebob
+RUN python manage.py collectstatic --noinput
 ENTRYPOINT ["/entrypoint-web"]
