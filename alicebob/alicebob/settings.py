@@ -16,6 +16,8 @@ import dj_database_url
 
 from pathlib import Path
 
+from pygments.lexer import default
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -32,7 +34,6 @@ DEBUG = decouple.config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = [
     '*'
 ]
-
 
 # Application definition
 
@@ -105,7 +106,7 @@ WSGI_APPLICATION = 'alicebob.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=decouple.config('DATABASE_URL'))
+    'default': dj_database_url.config(default=decouple.config('DATABASE_URL', default='sqlite:///db.sqlite3')),
 }
 
 
@@ -144,6 +145,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = Path(decouple.config('STATIC_ROOT', default='/staticfiles'))
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -153,7 +155,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # -------------------------------------------------------------------------
 # Webhook settings
 # -------------------------------------------------------------------------
-URL_TOKEN = decouple.config('URL_TOKEN')
+URL_TOKEN = decouple.config('URL_TOKEN', default=None)
 
 if not DEBUG:
     # Add Sentry
@@ -161,7 +163,7 @@ if not DEBUG:
     from sentry_sdk.integrations.django import DjangoIntegration
 
     sentry_sdk.init(
-        dsn=decouple.config('SENTRY_DSN'),
+        dsn=decouple.config('SENTRY_DSN', default=None),
         integrations=[DjangoIntegration()],
         traces_sample_rate=1.0,
         _experiments={

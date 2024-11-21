@@ -1,8 +1,9 @@
 import decouple
 import requests
+from pygments.lexer import default
 
-PUSHOVER_TOKEN = decouple.config("PUSHOVER_TOKEN")
-PUSHOVER_USER = decouple.config("PUSHOVER_USER")
+PUSHOVER_TOKEN = decouple.config("PUSHOVER_TOKEN", default=None)
+PUSHOVER_USER = decouple.config("PUSHOVER_USER", default=None)
 
 
 class NotificationException(Exception):
