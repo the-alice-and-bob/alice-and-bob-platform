@@ -56,7 +56,7 @@ class NewProduct:
     price	Price of the sold product.
     gateway	Payment gateway of the sold product.
     """
-    identifier: int
+    identifier: int  # EzyCourse ID
     first_name: str
     last_name: str
     name: str
@@ -125,7 +125,7 @@ class ChapterCompleted:
     email	Email of the student. Value should be 50 characters long.
     course_id	Id of the completed course.
     course_name	Name of the completed course.
-    chapter_id	Id of the completed chapter.
+    chapter_id	Id ofs the completed chapter.
     chapter_name	Name of the completed chapter.
     """
     identifier: int

@@ -2,7 +2,7 @@ import decouple
 
 from typing import Tuple, List
 
-from ..models import NewsTags
+from ...models import NewsTags
 from .ollama import generate_summary as generate_summary_ollama
 from .anthropic import generate_summary as generate_summary_anthropic
 

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 from dataclasses import dataclass, field
 
 from .interfaces import *
@@ -30,18 +30,19 @@ FIELD_MAP = {
 
 
 @dataclass
-class Product:
+class Product(RecordInterface):
     ezycourse_id: int
-    identifier: int
     product_name: str
     unit_price: float
     product_category: str
-    created_time: datetime
-    modified_time: datetime
     tags: List[Tag] = field(default_factory=list)
 
-    @staticmethod
-    def as_zoho() -> dict:
+    identifier: Optional[int] = None
+    created_time: Optional[datetime] = None
+    modified_time: Optional[datetime] = None
+
+    @property
+    def zoho_map(self) -> dict:
         return FIELD_MAP
 
 
@@ -83,10 +84,29 @@ class ZohoProducts(BaseModule, ModuleInterface):
             if found := self._search_by_id(record_id=product_id, module_name=self.api_name, return_fields=FIELD_MAP.keys()):
                 return super()._map_zoho_response_with_object(found, Product, FIELD_MAP)
         except ModuleException as e:
-            raise ProductNotFoundException(e)
+            raise ProductResponseException(e)
+        except ModuleRecordNotFound:
+            raise ProductNotFoundException(f"Product with id {product_id} not found")
+
+    def get_by_ezy_id(self, ezy_id: int) -> Product | ProductNotFoundException:
+        try:
+            criteria = [
+                ("ID_EzyCourse", "equals", str(ezy_id))
+            ]
+
+            if found := self._search_by_field(
+                    criteria=criteria,
+                    module_name=self.api_name,
+                    return_fields=FIELD_MAP.keys()
+            ):
+                return super()._map_zoho_response_with_object(found, Product, FIELD_MAP)
+        except ModuleException as e:
+            raise ProductResponseException(f"Error getting product with ezy_id {ezy_id}: {e}")
+        except ModuleRecordNotFound:
+            raise ProductNotFoundException(f"Product with ezy_id {ezy_id} not found")
 
     def create(self, product: Product) -> bool | ProductResponseException | ProductDuplicatedException:
-        product_dict = Product.as_zoho()
+        product_dict = product.as_zoho()
 
         try:
             self._create_record(module_name=self.api_name, data=product_dict)
@@ -99,7 +119,7 @@ class ZohoProducts(BaseModule, ModuleInterface):
         return True
 
     def update(self, record_id: int, **kwargs) -> bool | ProductResponseException | ProductNotFoundException:
-        product_dict = Product.as_zoho()
+        product_dict = Product.from_object(FIELD_MAP, kwargs)
 
         try:
             self._update_record(module_name=self.api_name, record_id=record_id, data=product_dict)
@@ -110,6 +130,16 @@ class ZohoProducts(BaseModule, ModuleInterface):
             raise ProductResponseException(e)
 
         return True
+
+    def update_tags(self, record_id: int | str, tags: List[Tag]) -> None | ProductResponseException | ProductNotFoundException:
+
+        try:
+            self._update_record_tag(module_name=self.api_name, record_id=record_id, tags=tags)
+        except ModuleRecordDuplicatedException as e:
+            raise ProductNotFoundException(e)
+
+        except ModuleException as e:
+            raise ProductResponseException(e)
 
     def delete(self, record_id: int) -> bool | ProductNotFoundException:
         try:

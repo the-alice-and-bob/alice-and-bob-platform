@@ -1,0 +1,22 @@
+services:
+
+  postgres:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=alicebob
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5999:5432"
+
+  redis:
+    image: redis:6
+    ports:
+      - "6900:6379"
+
+networks:
+  rabbitmq-net:
+
+volumes:
+    vault-file:
+    minio_data:

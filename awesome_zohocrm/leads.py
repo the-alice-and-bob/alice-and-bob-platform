@@ -5,7 +5,6 @@ from dataclasses import dataclass, field
 import requests
 
 from .interfaces import *
-from ...notion import NOTION_TOKEN
 
 
 class LeadResponseException(Exception):
@@ -21,6 +20,7 @@ class LeadNotFoundException(Exception):
 
 
 FIELD_MAP = {
+    "id": "identifier",
     "ID_EzyCourse": "ezycourse_id",
     "First_Name": "first_name",
     "Last_Name": "last_name",
@@ -53,8 +53,8 @@ class Lead(RecordInterface):
     owner: str = None
     tags: List[Tag] = field(default_factory=list)
 
-    @staticmethod
-    def zoho_map() -> dict:
+    @property
+    def zoho_map(self) -> dict:
         return FIELD_MAP
 
 
@@ -75,7 +75,7 @@ class ZohoLeads(BaseModule, ModuleInterface):
 
         try:
             if found := self._search_by_email(email=email, module_name=self.api_name, return_fields=FIELD_MAP.keys()):
-                yield super()._map_zoho_response_with_object(found, Lead, FIELD_MAP)
+                return super()._map_zoho_response_with_object(found, Lead, FIELD_MAP)
         except ModuleRecordNotFound:
             raise LeadNotFoundException(f"Lead with email {email} not found")
 
@@ -85,6 +85,8 @@ class ZohoLeads(BaseModule, ModuleInterface):
                 return super()._map_zoho_response_with_object(found, Lead, FIELD_MAP)
         except ModuleRecordNotFound:
             raise LeadNotFoundException(f"Lead with id {record_id} not found")
+        except ModuleException as e:
+            raise LeadResponseException(e)
 
     def create(self, lead: Lead) -> bool | LeadDuplicatedException | LeadResponseException | None:
         """
@@ -92,7 +94,7 @@ class ZohoLeads(BaseModule, ModuleInterface):
 
         :return: A message with the result of the operation.
         """
-        lead_dict = Lead.as_zoho(lead, Lead)
+        lead_dict = lead.as_zoho()
 
         try:
             self._create_record(module_name=self.api_name, data=lead_dict)
@@ -160,24 +162,31 @@ class ZohoLeads(BaseModule, ModuleInterface):
 
         return True
 
-    def update(self, record_id: int, **kwargs) -> bool | LeadResponseException | LeadNotFoundException:
+    def update(self, record_id: int, **kwargs) -> dict | LeadResponseException | LeadNotFoundException:
         """
         This method updates a lead in Zoho CRM.
 
         :return: A message with the result of the operation.
         """
 
-        lead_dict = Lead.as_zoho(kwargs, Lead)
+        lead_dict = Lead.from_object(FIELD_MAP, kwargs)
 
         try:
-            self._update_record(module_name=self.api_name, record_id=record_id, data=lead_dict)
+            return self._update_record(module_name=self.api_name, record_id=record_id, data=lead_dict)
         except ModuleRecordDuplicatedException as e:
             raise LeadNotFoundException(e)
 
         except ModuleException as e:
             raise LeadResponseException(e)
 
-        return True
+    def update_tags(self, record_id: int | str, tags: List[Tag]) -> None | LeadResponseException | LeadNotFoundException:
+        try:
+            self._update_record_tag(module_name=self.api_name, record_id=record_id, tags=tags)
+        except ModuleRecordDuplicatedException as e:
+            raise LeadNotFoundException(e)
+
+        except ModuleException as e:
+            raise LeadResponseException(e)
 
     def delete(self, record_id: int) -> bool | LeadNotFoundException:
         try:

@@ -18,9 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('ee4ea7f6-804f-49fd-a357-941b92b64159/', admin.site.urls),
 
     # Include news urls
     path('webhooks/news/', include('news.urls')),
-    path('webhooks/ezycourse/', include('news.urls')),
+    path('webhooks/ezycourse/', include('academy.urls')),
 ]

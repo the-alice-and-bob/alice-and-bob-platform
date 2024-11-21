@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 from dataclasses import dataclass, field
 
 from .interfaces import *
@@ -34,29 +34,30 @@ FIELD_MAP = {
 @dataclass
 class Buyer:
     name: str
-    identifier: str
+    identifier: int
 
 
 @dataclass
 class CourseBrief:
     name: str
-    identifier: str
+    identifier: int
 
 
 @dataclass
-class CourseProgress:
-    identifier: int
+class CourseProgress(RecordInterface):
     course: CourseBrief
     customer: Buyer
-    progress: int
-    current_chapter: str
-    current_lesson: str
-    start_date: datetime
-    completed_date: datetime
-    last_visit: datetime
+    progress: int = 0
 
-    @staticmethod
-    def as_zoho() -> dict:
+    current_chapter: Optional[str] = None
+    current_lesson: Optional[str] = None
+    start_date: Optional[datetime] = None
+    completed_date: Optional[datetime] = None
+    last_visit: Optional[datetime] = None
+    identifier: Optional[int] = None
+
+    @property
+    def zoho_map(self) -> dict:
         return FIELD_MAP
 
     def __post_init__(self):
@@ -72,6 +73,25 @@ class ZohoCourseProgress(BaseModule, ModuleInterface):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def _custom_to_zoho_serializer(self, data: CourseProgress) -> dict:
+        return {
+            "id": data.identifier,
+            "Course": {
+                "name": data.course.name,
+                "id": data.course.identifier
+            },
+            "Customer": {
+                "name": data.customer.name,
+                "id": data.customer.identifier
+            },
+            "Progress": data.progress,
+            "Current_Chapter": data.current_chapter,
+            "Current_Lesson": data.current_lesson,
+            "Start_Date": data.start_date,
+            "Completed_Date": data.completed_date,
+            "Last_Visit": data.last_visit,
+        }
+
     def get_all(self) -> Iterable[CourseProgress]:
         for rec in super()._get_records(
                 module_name=self.api_name, return_fields=FIELD_MAP.keys()
@@ -86,8 +106,8 @@ class ZohoCourseProgress(BaseModule, ModuleInterface):
             course = course.identifier
 
         criteria = [
-            ("Customer", "equals", customer),
-            ("Course", "equals", course)
+            ("Customer.id", "equals", customer),
+            ("Course.id", "equals", course)
         ]
 
         try:
@@ -103,27 +123,26 @@ class ZohoCourseProgress(BaseModule, ModuleInterface):
         except ModuleException as e:
             raise CourseProgressNotFoundException(e)
 
-    def create(self, course_progress: CourseProgress) -> bool | CourseProgressResponseException | CourseProgressDuplicatedException:
-        course_progress_dict = CourseProgress.as_zoho()
+    def create(self, course_progress: CourseProgress) -> int | CourseProgressResponseException | CourseProgressDuplicatedException:
+        course_progress_dict = self._custom_to_zoho_serializer(course_progress)
 
         try:
-            self._create_record(module_name=self.api_name, data=course_progress_dict)
+            return self._create_record(module_name=self.api_name, data=course_progress_dict)
         except ModuleRecordDuplicatedException as e:
             raise CourseProgressDuplicatedException(e)
 
         except ModuleException as e:
             raise CourseProgressResponseException(e)
 
-        return True
-
     def update(self, record_id: int, **kwargs) -> bool | CourseProgressResponseException | CourseProgressNotFoundException:
 
         # TODO: HAY QUE HACER EL MAPEO PERDIDO. HACIENDO QUE EL KWARGS CORRESPONDA CON LA PROPIEDAD ADECUADA ZOHO
         # Esto funciona:     course_progress.update(record_id=cp.identifier, Progress=100)
         # Esto no:     course_progress.update(record_id=cp.identifier, progress=100)
+        course_progress = CourseProgress.from_object(FIELD_MAP, kwargs)
 
         try:
-            self._update_record(module_name=self.api_name, record_id=record_id, data=kwargs)
+            self._update_record(module_name=self.api_name, record_id=record_id, data=course_progress)
         except ModuleRecordDuplicatedException as e:
             raise CourseProgressNotFoundException(e)
 
@@ -141,4 +160,7 @@ class ZohoCourseProgress(BaseModule, ModuleInterface):
         return True
 
 
-__all__ = ("ZohoCourseProgress", "CourseProgress")
+__all__ = (
+    "ZohoCourseProgress", "CourseProgress", "CourseProgressNotFoundException", "CourseProgressResponseException",
+    "CourseProgressDuplicatedException", "Buyer", "CourseBrief"
+)

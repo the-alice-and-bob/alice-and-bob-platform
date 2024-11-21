@@ -39,6 +39,17 @@ services:
       - SENTRY_DSN=${SENTRY_DSN}
     entrypoint: "/entrypoint-celery-worker"
 
+  postgres:
+    image: postgres:14
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=alicebob
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5999:5432"
+
 networks:
   rabbitmq-net:
 

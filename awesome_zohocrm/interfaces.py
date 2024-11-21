@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import abc
 import requests
 from datetime import datetime
-from typing import Iterable, List, Tuple, Dict
+from typing import Iterable, List, Tuple, Dict, Optional
 
 # from zcrmsdk.src.com.zoho.crm.api.record import Record, RecordOperations as ZohoRecordOperations
 # from zohocrmsdk.src.com.zoho.crm.api.tags import Tag
@@ -35,19 +35,14 @@ class ModuleRecordDuplicatedException(Exception):
 
 class RecordInterface(abc.ABC):
 
-    @staticmethod
-    @abc.abstractmethod
-    def zoho_map() -> dict:
-        ...
-
-    @staticmethod
-    def as_zoho(input_data: dict or "RecordInterface", klass) -> dict:
+    @classmethod
+    def from_object(cls, fields: dict, input_data) -> dict:
         if isinstance(input_data, dict):
             ret = {}
 
-            for k, v in input_data.items():
+            for k, v in fields.items():
                 try:
-                    ret[klass.zoho_map()[k]] = v
+                    ret[k] = input_data[v]
                 except KeyError:
                     continue
 
@@ -56,8 +51,33 @@ class RecordInterface(abc.ABC):
         else:
             return {
                 k: getattr(input_data, v)
-                for k, v in klass.zoho_map().items()
+                for k, v in fields.items()
             }
+
+    def as_zoho(self, input_data: Optional[dict] = None) -> dict:
+        input_data = input_data or self
+
+        if isinstance(input_data, dict):
+            ret = {}
+
+            for k, v in input_data.items():
+                try:
+                    ret[self.zoho_map[k]] = v
+                except KeyError:
+                    continue
+
+            return ret
+
+        else:
+            return {
+                k: getattr(input_data, v)
+                for k, v in self.zoho_map.items()
+            }
+
+    @property
+    @abc.abstractmethod
+    def zoho_map(self) -> dict:
+        raise NotImplementedError
 
 
 class ModuleInterface(abc.ABC):
@@ -96,6 +116,7 @@ class Tag:
             name=data.get("name"),
             color=data.get("color")
         )
+
 
 @dataclass
 class ModuleMetadata:
@@ -167,12 +188,12 @@ class BaseModule:
         Example:
 
         data = {
-            'private_profile': None, 'global_search_supported': True, 'activity_badge': 'Enabled', '$field_states': ['convert_scheduler'], 'recycle_bin_on_delete': True, 'plural_label': 'Leads', 'presence_sub_menu': True, 'chart_view': False, 'id': '738692000000000043', 'per_page': 100, '$properties': ['$approval_state', '$wizard_connection_path', '$converted_detail', '$cpq_executions', '$currency_symbol', '$zia_owner_assignment', '$review', '$review_process', '$approval', '$in_merge', '$process_flow', '$orchestration', '$pathfinder', '$zia_visions', '$editable', '$field_states', '$locked_for_me', '$sharing_permission'], 'visibility': 1, 'sub_menu_available': True, 'profiles': [{'name': 'Administrator', 'id': '738692000000026972'}, {'name': 'Standard', 'id': '738692000000026974'}], '$on_demand_properties': ['$blocked_reason', '$client_portal_invited'], 'kanban_view_supported': True, 'web_link': None, 'lookup_field_properties': {'fields': [{'sequence_number': 1, 'api_name': 'Full_Name', 'id': '738692000000000595'}, {'sequence_number': 2, 'api_name': 'Email', 'id': '738692000000000599'}, {'sequence_number': 3, 'api_name': 'Tag', 'id': '738692000000069041'}, {'sequence_number': 4, 'api_name': 'Lead_Source', 'id': '738692000000000609'}, {'sequence_number': 5, 'api_name': 'First_Name', 'id': '738692000000000591'}, {'sequence_number': 6, 'api_name': 'Last_Name', 'id': '738692000000000593'}]}, 'viewable': True, 'api_name': 'Leads', 'public_fields_configured': False, 'module_name': 'Leads', 'chart_view_supported': True, 'custom_view': {'display_value': 'All Leads', 'created_time': None, 'access_type': 'public', 'criteria': {'comparator': 'equal', 'field': {'api_name': 'Converted__s', 'id': '738692000000263001'}, 'type': 'value', 'value': False}, 'system_name': 'ALLVIEWS', 'sort_by': None, 'created_by': None, 'shared_to': None, 'default': True, 'modified_time': '2024-11-12T13:00:27+01:00', 'name': 'All Open Leads', 'system_defined': True, 'modified_by': {'name': 'Daniel García', 'id': '738692000000414001'}, 'id': '738692000000030939', 'fields': [{'api_name': 'Full_Name', '_pin': False, 'id': '738692000000000595'}, {'api_name': 'Email', '_pin': False, 'id': '738692000000000599'}, {'api_name': 'Tag', '_pin': False, 'id': '738692000000069041'}, {'api_name': 'Lead_Source', '_pin': False, 'id': '738692000000000609'}, {'api_name': 'First_Name', '_pin': False, 'id': '738692000000000591'}, {'api_name': 'Last_Name', '_pin': False, 'id': '738692000000000593'}], 'category': 'public_views', 'last_accessed_time': '2024-11-13T15:37:06+01:00', 'locked': False, 'sort_order': None, 'favorite': None}, 'parent_module': {}, 'status': 'visible', 'has_more_profiles': False, 'access_type': 'org_based', 'kanban_view': False, 'deletable': True, 'description': None, 'creatable': True, 'filter_status': True, 'modified_time': '2024-10-08T14:39:26+02:00', 'actual_plural_label': 'Leads', 'lookupable': True, 'isBlueprintSupported': True, 'related_list_properties': {'sort_by': None, 'fields': ['Full_Name', 'Company', 'Email', 'Lead_Source', 'Lead_Status', 'Phone'], 'sort_order': None}, 'convertable': True, 'editable': True, 'actual_singular_label': 'Lead', 'display_field': 'Full_Name', 'search_layout_fields': ['Owner', 'Company', 'Full_Name', 'Email', 'Phone', 'Lead_Source'], 'show_as_tab': True, 'sequence_number': 2, 'singular_label': 'Lead', 'api_supported': True, 'quick_create': True, 'modified_by': {'name': 'Daniel García', 'id': '738692000000414001'}, 'generated_type': 'default', 'feeds_required': False, 'arguments': [], 'profile_count': 2, 'business_card_field_limit': 5
+            'private_profile': None, 'global_search_supported': True, 'activity_badge': 'Enabled', '$field_states': ['convert_scheduler'], 'recycle_bin_on_delete': True, 'plural_label': 'Leads', 'presence_sub_menu': True, 'chart_view': False, 'id': '738692000000000043', 'per_page': 100, '$properties': ['$approval_state', '$wizard_connection_path', '$converted_detail', '$cpq_executions', '$currency_symbol', '$zia_owner_assignment', '$review', '$review_process', '$approval', '$in_merge', '$process_flow', '$orchestration', '$pathfinder', '$zia_visions', '$editable', '$field_states', '$locked_for_me', '$sharing_permission'], 'visibility': 1, 'sub_menu_available': True, 'profiles': [{'name': 'Administrator', 'id': '738692000000026972'}, {'name': 'Standard', 'id': '738692000000026974'}], '$on_demand_properties': ['$blocked_reason', '$client_portal_invited'], 'kanban_view_supported': True, 'web_link': None, 'lookup_field_properties': {'fields': [{'sequence_number': 1, 'api_name': 'Full_Name', 'id': '738692000000000595'}, {'sequence_number': 2, 'api_name': 'Email', 'id': '738692000000000599'}, {'sequence_number': 3, 'api_name': 'Tag', 'id': '738692000000069041'}, {'sequence_number': 4, 'api_name': 'Lead_Source', 'id': '738692000000000609'}, {'sequence_number': 5, 'api_name': 'First_Name', 'id': '738692000000000591'}, {'sequence_number': 6, 'api_name': 'Last_Name', 'id': '738692000000000593'}]}, 'viewable': True, 'api_name': 'Leads', 'public_fields_configured': False, 'module_function': 'Leads', 'chart_view_supported': True, 'custom_view': {'display_value': 'All Leads', 'created_time': None, 'access_type': 'public', 'criteria': {'comparator': 'equal', 'field': {'api_name': 'Converted__s', 'id': '738692000000263001'}, 'type': 'value', 'value': False}, 'system_name': 'ALLVIEWS', 'sort_by': None, 'created_by': None, 'shared_to': None, 'default': True, 'modified_time': '2024-11-12T13:00:27+01:00', 'name': 'All Open Leads', 'system_defined': True, 'modified_by': {'name': 'Daniel García', 'id': '738692000000414001'}, 'id': '738692000000030939', 'fields': [{'api_name': 'Full_Name', '_pin': False, 'id': '738692000000000595'}, {'api_name': 'Email', '_pin': False, 'id': '738692000000000599'}, {'api_name': 'Tag', '_pin': False, 'id': '738692000000069041'}, {'api_name': 'Lead_Source', '_pin': False, 'id': '738692000000000609'}, {'api_name': 'First_Name', '_pin': False, 'id': '738692000000000591'}, {'api_name': 'Last_Name', '_pin': False, 'id': '738692000000000593'}], 'category': 'public_views', 'last_accessed_time': '2024-11-13T15:37:06+01:00', 'locked': False, 'sort_order': None, 'favorite': None}, 'parent_module': {}, 'status': 'visible', 'has_more_profiles': False, 'access_type': 'org_based', 'kanban_view': False, 'deletable': True, 'description': None, 'creatable': True, 'filter_status': True, 'modified_time': '2024-10-08T14:39:26+02:00', 'actual_plural_label': 'Leads', 'lookupable': True, 'isBlueprintSupported': True, 'related_list_properties': {'sort_by': None, 'fields': ['Full_Name', 'Company', 'Email', 'Lead_Source', 'Lead_Status', 'Phone'], 'sort_order': None}, 'convertable': True, 'editable': True, 'actual_singular_label': 'Lead', 'display_field': 'Full_Name', 'search_layout_fields': ['Owner', 'Company', 'Full_Name', 'Email', 'Phone', 'Lead_Source'], 'show_as_tab': True, 'sequence_number': 2, 'singular_label': 'Lead', 'api_supported': True, 'quick_create': True, 'modified_by': {'name': 'Daniel García', 'id': '738692000000414001'}, 'generated_type': 'default', 'feeds_required': False, 'arguments': [], 'profile_count': 2, 'business_card_field_limit': 5
         }
         """
         return cls(
             auth=auth,
-            name=data.get("module_name"),
+            name=data.get("module_function"),
             identifier=data.get("id"),
             api_name=data.get("api_name"),
             label_singular=data.get("singular_label"),
@@ -213,7 +234,7 @@ class BaseModule:
         response_json = response.json()
 
         try:
-            fields =  response_json["fields"]
+            fields = response_json["fields"]
         except KeyError:
             raise ModuleException(f"Error getting fields: {response.text}")
 
@@ -387,6 +408,9 @@ class BaseModule:
 
         response = requests.get(url, headers=self.auth.http_headers, params=query_params)
 
+        if response.status_code == 204:
+            raise ModuleRecordNotFound(f"Record with ID {record_id} not found")
+
         if response.status_code != 200:
             raise ModuleException(f"Error getting record: {response.text}")
 
@@ -404,15 +428,14 @@ class BaseModule:
             criteria: List[Tuple[str, str, str]],
             module_name: str,
             return_fields: Iterable[str],
-            date_start: datetime = None,
-            date_end: datetime = None,
             query_params: dict = None,
+            multiple_response: bool = False,
     ) -> dict:
         """
 
         fields parameter example:
 
-        fields = [("email", "eq", "aa@aa.com")]
+        fields = [("email", "equals", "aa@aa.com")]
 
 
         :param email: the email to search for. This is a required parameter.
@@ -427,9 +450,9 @@ class BaseModule:
         # Transform fields into a query string.
         #
         # Example with len 1:
-        #   fields = email:eq:aaa@aaa.com
+        #   fields = email:equals:aaa@aaa.com
         # Example with len 2 or more:
-        #   fields = (email:eq:aaaa@aaaa.com)and(name:eq:John)
+        #   fields = (email:equals:aaaa@aaaa.com)and(name:eq:John)
         if len(criteria) == 1:
             query_string = f"{criteria[0][0]}:{criteria[0][1]}:{criteria[0][2]}"
         else:
@@ -445,14 +468,18 @@ class BaseModule:
         response = requests.get(url, headers=self.auth.http_headers, params=query_params)
 
         if response.status_code != 200:
-            raise ModuleException(f"Error getting leads: {response.text}")
+            raise ModuleException(f"Error getting records: {response.text}")
 
         response_json = response.json()
 
         try:
-            data = response_json["data"][0]
+            if multiple_response:
+                return response_json["data"]
+
+            else:
+                data = response_json["data"][0]
         except (KeyError, IndexError):
-            raise ModuleRecordNotFound(f"Record with ID {email} not found")
+            raise ModuleRecordNotFound(f"Record with not found")
 
         return data
 
@@ -484,6 +511,9 @@ class BaseModule:
 
         response = requests.get(url, headers=self.auth.http_headers, params=query_params)
 
+        if response.status_code == 204:
+            raise ModuleRecordNotFound(f"Record with email {email} not found")
+
         if response.status_code != 200:
             raise ModuleException(f"Error getting leads: {response.text}")
 
@@ -496,7 +526,12 @@ class BaseModule:
 
         return data
 
-    def _create_record(self, module_name: str, data: Dict[str, str]) -> dict:
+    def _create_record(self, module_name: str, data: Dict[str, str]) -> int:
+        """
+        Create a record in the module with the data
+
+        :return: returns the record ID of the created record
+        """
         url = f"{self.auth.api_domain}/crm/v7/{module_name}"
 
         # Clean None values
@@ -520,7 +555,7 @@ class BaseModule:
         response_json = response.json()
 
         try:
-            return response_json["data"][0]["details"]
+            return response_json["data"][0]["details"]["id"]
         except (KeyError, IndexError):
             raise ModuleRecordNotFound(f"Record not found")
 
@@ -536,6 +571,36 @@ class BaseModule:
         }
 
         response = requests.put(url, headers=self.auth.http_headers, json=post_data)
+
+        if response.status_code in (404, 400):
+            raise ModuleRecordNotFound(f"Record not found: {response.text}")
+
+        if response.status_code != 200:
+            raise ModuleException(f"Error creating record: {response.text}")
+
+        response_json = response.json()
+
+        try:
+            return response_json["data"][0]["details"]
+        except (KeyError, IndexError):
+            raise ModuleRecordNotFound(f"Record not found")
+
+    def _update_record_tag(self, module_name: str, record_id: str, tags: List[Tag]) -> dict:
+        url = f"{self.auth.api_domain}/crm/v7/{module_name}/{record_id}/actions/add_tags"
+
+        # Clean None values
+        data = {
+            "tags": [
+                {
+                    # "id": tag.identifier,
+                    "name": tag.name,
+                    "color": tag.color
+                }
+                for tag in tags
+            ]
+        }
+
+        response = requests.post(url, headers=self.auth.http_headers, json=data)
 
         if response.status_code in (404, 400):
             raise ModuleRecordNotFound(f"Record not found: {response.text}")
@@ -599,6 +664,11 @@ class BaseModule:
         config = {}
 
         for k, v in fields_map.items():
+            # Map tags
+            if "tag" in k.lower() and data.get("Tag", False):
+                config[v] = [Tag.from_zoho_api(tag) for tag in data[k]]
+                continue
+
             try:
                 config[v] = data[k]
             except KeyError:
@@ -612,7 +682,8 @@ class BaseModule:
     def __repr__(self):
         return f"<BaseModule {self.name} ({self.identifier})>"
 
+
 __all__ = (
-    'BaseModule', 'ModuleException', 'ModuleRecordNotFound', 'ModuleRecordDuplicatedException', 'ModuleInterface', 'RecordInterface',
-    'Tag'
+    'BaseModule', 'ModuleException', 'ModuleRecordNotFound', 'ModuleRecordDuplicatedException', 'ModuleInterface',
+    'Tag', 'RecordInterface'
 )

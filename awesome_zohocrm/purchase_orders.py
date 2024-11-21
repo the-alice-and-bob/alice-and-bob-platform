@@ -66,11 +66,14 @@ class PurchaseItem:
         if not self.modified_time:
             self.modified_time = datetime.now()
 
-        if not self.total_after_discount:
-            self.total_after_discount = self.total - self.discount
-
         if not self.total:
             self.total = self.list_price * self.quantity
+
+        if not self.discount:
+            self.discount = 0
+
+        if not self.total_after_discount:
+            self.total_after_discount = self.total - self.discount
 
 
 @dataclass
@@ -156,18 +159,54 @@ class ZohoPurchaseOrders(BaseModule, ModuleInterface):
         ):
             yield self._custom_zoho_response(rec)
 
-    def get_by_email(self, email: str) -> PurchaseOrder | PurchaseOrderNotFoundException:
-
-        try:
-            if found := self._search_by_email(email=email, module_name=self.api_name, return_fields=FIELD_MAP.keys()):
-                yield self._custom_zoho_response(found)
-        except ModuleRecordNotFound:
-            raise PurchaseOrderNotFoundException(f"PurchaseOrder with email {email} not found")
-
     def get_by_id(self, record_id: int) -> PurchaseOrder | PurchaseOrderNotFoundException:
         try:
             if found := self._search_by_id(record_id=record_id, module_name=self.api_name, return_fields=FIELD_MAP.keys()):
                 return self._custom_zoho_response(found)
+        except ModuleException as e:
+            raise PurchaseOrderNotFoundException(e)
+
+    def get_by_user_id(self, zoho_id: int) -> Iterable[PurchaseOrder] | PurchaseOrderNotFoundException:
+        criteria = [
+            ("Contact_Name.id", "equals", str(zoho_id))
+        ]
+
+        try:
+            if found := self._search_by_field(
+                    criteria=criteria, module_name=self.api_name, return_fields=FIELD_MAP.keys(), multiple_response=True
+            ):
+                for purchase_order in found:
+                    yield self._custom_zoho_response(purchase_order)
+        except ModuleException as e:
+            raise PurchaseOrderNotFoundException(e)
+
+    def get_by_user_id_and_subject(self, zoho_id: int, subject: str) -> Iterable[PurchaseOrder] | PurchaseOrderNotFoundException:
+        criteria = [
+            ("Subject", "equals", subject),
+            ("Contact_Name.id", "equals", str(zoho_id))
+        ]
+
+        try:
+            if found := self._search_by_field(
+                    criteria=criteria, module_name=self.api_name, return_fields=FIELD_MAP.keys(), multiple_response=True
+            ):
+                for purchase_order in found:
+                    yield self._custom_zoho_response(purchase_order)
+        except ModuleException as e:
+            raise PurchaseOrderNotFoundException(e)
+
+    def get_first_by_user_id_and_subject(self, zoho_id: int, subject: str) -> Iterable[PurchaseOrder] | PurchaseOrderNotFoundException:
+        criteria = [
+            ("Subject", "equals", subject),
+            ("Contact_Name.id", "equals", str(zoho_id))
+        ]
+
+        try:
+            if found := self._search_by_field(
+                    criteria=criteria, module_name=self.api_name, return_fields=FIELD_MAP.keys(), multiple_response=True
+            ):
+                if found and len(found) > 0:
+                    return self._custom_zoho_response(found[0])
         except ModuleException as e:
             raise PurchaseOrderNotFoundException(e)
 
@@ -206,14 +245,12 @@ class ZohoPurchaseOrders(BaseModule, ModuleInterface):
         purchase_order_dict = self._dump_for_update_or_create(purchase_order)
 
         try:
-            self._create_record(module_name=self.api_name, data=purchase_order_dict)
+            return self._create_record(module_name=self.api_name, data=purchase_order_dict)
         except ModuleRecordDuplicatedException as e:
             raise PurchaseOrderDuplicatedException(e)
 
         except ModuleException as e:
             raise PurchaseOrderResponseException(e)
-
-        return True
 
     def update(self, record_id: int, purchase_order: PurchaseOrder) -> bool | PurchaseOrderResponseException | PurchaseOrderNotFoundException:
         purchase_order_dict = self._dump_for_update_or_create(purchase_order)

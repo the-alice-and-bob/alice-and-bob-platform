@@ -9,7 +9,10 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import ssl
+
 import decouple
+import dj_database_url
 
 from pathlib import Path
 
@@ -35,6 +38,14 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+
+    # Unfold
+    'unfold',
+    'unfold.contrib.filters',
+    'unfold.contrib.import_export',
+    'unfold.contrib.guardian',
+    'unfold.contrib.simple_history',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,9 +53,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third party apps
+    'django_celery_beat',
+    'import_export',
+    'simple_history',
+
     # Custom apps
-    'news'
+    # 'news',
+    'academy',
+    'zoho',
+    'awesome_admin',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,6 +74,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Third party middleware
+    'simple_history.middleware.HistoryRequestMiddleware'
+
 ]
 
 ROOT_URLCONF = 'alicebob.urls'
@@ -81,10 +105,7 @@ WSGI_APPLICATION = 'alicebob.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(default=decouple.config('DATABASE_URL'))
 }
 
 
@@ -154,4 +175,9 @@ if not DEBUG:
 CELERY_BROKER_URL = decouple.config('CELERY_BROKER_URL', default='amqp://guest:guest@localhost')
 CELERY_RESULT_BACKEND = decouple.config('CELERY_BACKEND_URL', default=None)
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-CELERY_BROKER_USE_SSL = decouple.config('CELERY_BROKER_USE_SSL', default=True, cast=bool)
+
+if CELERY_BROKER_URL.startswith('rediss') or CELERY_BROKER_URL.startswith('amqps'):
+    CELERY_BROKER_USE_SSL = {
+        'cert_reqs': ssl.CERT_NONE,  # Disable SSL certificate verification
+        'ssl_version': ssl.PROTOCOL_TLS,
+    }

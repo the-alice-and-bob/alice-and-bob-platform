@@ -9,8 +9,10 @@ FROM base AS development
 # Disable virtualenv creation
 ENV POETRY_VIRTUALENVS_CREATE=false
 
-RUN apk add build-base libffi-dev openssl-dev && \
-    pip install --disable-pip-version-check --no-cache-dir -U pip poetry
+#RUN apk add build-base libffi-dev openssl-dev && \
+#    pip install --disable-pip-version-check --no-cache-dir -U pip poetry
+
+RUN pip install --disable-pip-version-check --no-cache-dir -U pip poetry
 
 COPY ./pyproject.toml pyproject.toml
 COPY ./poetry.lock poetry.lock
@@ -23,6 +25,9 @@ COPY ./entrypoint-celery-worker.sh /entrypoint-celery-worker
 RUN chmod +x /entrypoint*
 
 COPY ./alicebob /alicebob
-RUN chown -R alicebob:alicebob /alicebob
+COPY ./awesome_zohocrm /awesome_zohocrm
+COPY ./ezycourse /ezycourse
+RUN chown -R alicebob:alicebob /alicebob /awesome_zohocrm /ezycourse
 
 WORKDIR /alicebob
+ENTRYPOINT ["/entrypoint-web"]
