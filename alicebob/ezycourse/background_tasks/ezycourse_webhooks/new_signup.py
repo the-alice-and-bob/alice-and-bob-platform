@@ -22,4 +22,5 @@ def ezycourse_new_signup(data: dict):
         print(f"Error creating student: {e}")
 
 
+
 __all__ = ("ezycourse_new_signup",)
