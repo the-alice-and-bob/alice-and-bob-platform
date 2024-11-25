@@ -22,7 +22,7 @@ RUN chmod +x /entrypoint*
 
 COPY ./alicebob /alicebob
 COPY ./awesome_zohocrm /alicebob/awesome_zohocrm
-COPY ./ezycourse /alicebob/ezycourse
+COPY ./awesome_ezycourse /alicebob/awesome_ezycourse
 RUN chown -R alicebob:alicebob /alicebob /staticfiles /data /pg-ca-certificate.crt
 
 WORKDIR /alicebob
