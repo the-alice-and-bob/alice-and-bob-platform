@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 import requests
 
-from ezycourse.sdk.auth import Auth
+from awesome_ezycourse.sdk.auth import Auth
 
 
 class FormError(Exception):

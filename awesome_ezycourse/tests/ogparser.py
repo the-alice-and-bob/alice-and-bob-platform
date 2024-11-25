@@ -1,4 +1,4 @@
-from ezycourse.sdk.utils import extract_og
+from awesome_ezycourse.sdk.utils import extract_og
 
 
 if __name__ == '__main__':

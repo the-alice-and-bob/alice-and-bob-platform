@@ -29,7 +29,7 @@ First, you need to login to your EzyCourse account. You can do this by running t
 The library support multiple sites, you can provide the url of the site you want to login to. For example: `https://app.ezyeducation.com`.
 
 ```python
-from ezycourse.sdk import Auth
+from awesome_ezycourse.sdk import Auth
 
 user = input("Enter your username: ")
 password = input("Enter your password: ")
@@ -50,7 +50,7 @@ else:
 If you have already logged in to your account and have the cookies, you can use the following code to login:
 
 ```python
-from ezycourse.sdk import Auth
+from awesome_ezycourse.sdk import Auth
 
 cookies = "NEXT_LOCALE_V2=xxxxxx%3D%3D; swuid=s%xxxxxxxxx; zabUserId=xxxxx; zps-tgr-dts=xxxx; _gcl_au=xxxx; _ga_8RQEBBFXT4=xxxx; _ga=xxxx; __stripe_mid=xxxx; crisp-client%2Fsession%2Fxxxxxx; zabHMBucket=xxxx; zpsfa_8o1PxPY=xxxxx; __stripe_sid=xxxx"
 site = input("Enter your site: ")
@@ -70,7 +70,7 @@ else:
 The library will keep the session in the user's home directory. You can use the following code to save the session to a file and load it later:
 
 ```python
-from ezycourse.sdk import Auth
+from awesome_ezycourse.sdk import Auth
 
 user = input("Enter your username: ")
 password = input("Enter your password: ")
@@ -108,7 +108,7 @@ You can manage the communities using the library.
 ### List all communities
 
 ```python
-from ezycourse.sdk import Auth, Communities
+from awesome_ezycourse.sdk import Auth, Communities
 
 auth = Auth()
 auth.restore()
@@ -120,7 +120,7 @@ for community in Communities(auth).list():
 ### Get a community
 
 ```python
-from ezycourse.sdk import Auth, Communities
+from awesome_ezycourse.sdk import Auth, Communities
 
 community_id = int(input("Enter the community id: "))
 
@@ -143,7 +143,7 @@ A space is a concept community content. When you enter on a community, you will 
 ### List all spaces
 
 ```python
-from ezycourse.sdk import Auth, Communities
+from awesome_ezycourse.sdk import Auth, Communities
 
 community_id = int(input("Enter the community id: "))
 
@@ -160,7 +160,7 @@ for space in communities.get(community_id).list_spaces():
 A space contains posts. You can list all the posts in a space using the following code:
 
 ```python
-from ezycourse.sdk import Auth, Communities
+from awesome_ezycourse.sdk import Auth, Communities
 
 community_id = int(input("Enter the community id: "))
 space_id = int(input("Enter the space id: "))
@@ -183,7 +183,7 @@ for post in communities.get(community_id).get_space(space_id).list_posts():
 You can create a new post in a space using the following code:
 
 ```python
-from ezycourse.sdk import Auth, Communities
+from awesome_ezycourse.sdk import Auth, Communities
 
 community_id = int(input("Enter the community id: "))
 space_id = int(input("Enter the space id: "))
@@ -209,7 +209,7 @@ You can manage the courses using the library.
 ### List all courses with statistics
 
 ```python
-from ezycourse.sdk import Auth, Courses
+from awesome_ezycourse.sdk import Auth, Courses
 
 community_id = int(input("Enter the community id: "))
 space_id = int(input("Enter the space id: "))

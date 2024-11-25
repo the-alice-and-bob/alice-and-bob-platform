@@ -3,7 +3,7 @@ name = "AliceBob"
 version = "0.1.0"
 description = ""
 authors = ["Alice & Bob Yeam <hello@alicebob.io>"]
-packages = [{ include = "alicebob"}, { include = "ezycourse"}, { include = "awesome_zohocrm"}]
+packages = [{ include = "alicebob"}, { include = "awesome_ezycourse"}, { include = "awesome_zohocrm"}]
 readme = "README.md"
 
 [tool.poetry.dependencies]

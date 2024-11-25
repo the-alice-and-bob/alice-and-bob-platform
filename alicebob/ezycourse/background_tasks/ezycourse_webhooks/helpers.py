@@ -14,7 +14,7 @@ from awesome_zohocrm import (
     CourseProgress as CourseProgressZoho
 )
 
-from alicebob_sdk.zoho import zoho_instance
+from zoho.sdk import zoho_instance
 from academy.models import Student, Product, Sells, ProductTypes, CourseProgress
 
 from .models import LessonCompleted, ChapterCompleted, CourseCompleted

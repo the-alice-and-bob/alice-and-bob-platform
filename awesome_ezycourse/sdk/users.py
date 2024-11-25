@@ -69,6 +69,7 @@ class Users:
         Get all users from the platform
 
         :param max_users: Maximum number of users to export
+        :param show_progress: Show progress of the export
         :param only_students: Export only students, not teachers or admins
         :param enrollment_status: Filter users by enrollment status
         :param enrolled_in_course: Filter users by courses they are enrolled in

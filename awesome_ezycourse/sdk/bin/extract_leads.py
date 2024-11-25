@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import List
 from datetime import datetime
 
-from ezycourse.sdk import User
+from awesome_ezycourse.sdk import User
 
 
 @dataclass

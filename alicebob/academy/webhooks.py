@@ -16,8 +16,9 @@ from django.views.decorators.http import require_http_methods
 
 from celery_app import app as background_tasks
 
+from ezycourse.background_tasks.ezycourse_webhooks import *
+
 from .decorators import *
-from .background_tasks.ezycourse_webhooks import *
 
 
 @csrf_exempt

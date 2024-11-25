@@ -63,9 +63,10 @@ INSTALLED_APPS = [
 
     # Custom apps
     # 'news',
-    'academy',
     'zoho',
+    'academy',
     'awesome_admin',
+    'ezycourse',
 ]
 
 
@@ -186,3 +187,10 @@ if CELERY_BROKER_URL.startswith('rediss') or CELERY_BROKER_URL.startswith('amqps
         'cert_reqs': ssl.CERT_NONE,  # Disable SSL certificate verification
         'ssl_version': ssl.PROTOCOL_TLS,
     }
+
+# -------------------------------------------------------------------------
+# EzyCourse Settings
+# -------------------------------------------------------------------------
+EZYCOURSE_ADMIN_EMAIL = decouple.config('EZYCOURSE_ADMIN_EMAIL', default="cr0hn@cr0hn.com")
+EZYCOURSE_BOB_EMAIL = decouple.config('EZYCOURSE_BOB_EMAIL', default="bob@alicebob.io")
+EZYCOURSE_ALICE_EMAIL = decouple.config('EZYCOURSE_ALICE_EMAIL', default="alice@alicebob.io")

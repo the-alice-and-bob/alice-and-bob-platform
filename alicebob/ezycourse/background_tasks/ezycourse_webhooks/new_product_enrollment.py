@@ -1,6 +1,6 @@
 from django.db.transaction import atomic
 
-from alicebob_sdk import zoho_instance
+from zoho.sdk import zoho_instance
 from awesome_zohocrm import ZohoCRM, Contact, ContactNotFoundException, Lead
 
 from .helpers import *

@@ -6,7 +6,7 @@ import argparse
 from typing import Dict
 from datetime import datetime
 
-from ezycourse.sdk.users import User
+from awesome_ezycourse.sdk.users import User
 
 
 # Function to transform CSV data into User dataclass

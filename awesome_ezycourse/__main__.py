@@ -7,12 +7,12 @@ import click
 from rich.table import Table
 from rich.console import Console
 
-from ezycourse import __version__
-from ezycourse.sdk import Courses
-from ezycourse.sdk.auth import Auth
-from ezycourse.sdk.users import Users
-from ezycourse.sdk.communities import Communities
-from ezycourse.sdk.forms import Forms, FormError
+from awesome_ezycourse import __version__
+from awesome_ezycourse.sdk import Courses
+from awesome_ezycourse.sdk.auth import Auth
+from awesome_ezycourse.sdk.users import Users
+from awesome_ezycourse.sdk.communities import Communities
+from awesome_ezycourse.sdk.forms import Forms, FormError
 
 
 def parse_date(date: datetime | None) -> str:

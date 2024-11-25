@@ -238,11 +238,12 @@ class Course:
     identifier: str
     title: str
     image: str
-    is_published: str
+    is_published: CourseStatus
     course_type: CourseType
     course_slug: str
     approval_status: str
 
+    price: float | None = None
     content: str | None = None
     published_date: datetime | None = None
     short_description: str | None = None
@@ -250,54 +251,6 @@ class Course:
     chapters: List[CourseChapter] = field(default_factory=list)
 
     URL_COURSE_STATISTICS = "/api/teacher/course/getAllEnrolled"
-
-    @classmethod
-    def from_list_json(cls, auth, json_data: dict) -> "Course":
-        if json_data["course_type"] == "BUNDLE":
-            course_type = CourseType.BUNDLE
-        else:
-            course_type = CourseType.SINGLE
-
-        return cls(
-            auth=auth,
-            identifier=json_data["id"],
-            title=json_data["title"],
-            image=json_data["image"],
-            is_published=json_data["is_published"],
-            course_type=course_type,
-            published_date=json_data["created_at"],
-            course_slug=json_data["course_slug"],
-            approval_status=json_data["approval_status"]
-        )
-
-    @classmethod
-    def from_get_json(cls, auth, json_data: dict) -> "Course":
-
-        try:
-            published_date = datetime.strptime(json_data["published_date"], "%Y-%m-%dT%H:%M:%S.%f%z")
-        except (ValueError, TypeError):
-            published_date = None
-
-        if "SINGLE" in json_data["course_type"]:
-            course_type = CourseType.SINGLE
-        else:
-            course_type = CourseType.BUNDLE
-
-        return cls(
-            auth=auth,
-            identifier=json_data["id"],
-            title=json_data["title"],
-            image=json_data["image"],
-            is_published=json_data["is_published"],
-            content=json_data["content"],
-            course_type=course_type,
-            language=json_data.get("course_language", None),
-            published_date=published_date,
-            short_description=json_data["short_description"],
-            course_slug=json_data["course_slug"],
-            approval_status=json_data["approval_status"],
-            chapters=[CourseChapter.from_json(chapter) for chapter in json_data.get("chapter", [])]
-        )
 
     def get_statistics(self) -> Iterable[CourseUserStatistics]:
         query_params = {
@@ -629,9 +582,39 @@ class Courses:
         except ValueError:
             raise CourseException("Invalid JSON response")
 
-        return Course.from_get_json(self.auth, data)
+        try:
+            published_date = datetime.strptime(data["published_date"], "%Y-%m-%dT%H:%M:%S.%f%z")
+        except (ValueError, TypeError):
+            published_date = None
 
-    def list_courses(self) -> List[Tuple[Course, CourseStatistics]]:
+        if "SINGLE" in data["course_type"]:
+            course_type = CourseType.SINGLE
+        else:
+            course_type = CourseType.BUNDLE
+
+        try:
+            price = data["prices"][0]["price"]
+        except (KeyError, IndexError):
+            price = 0
+
+        return Course(
+            auth=self.auth,
+            identifier=data["id"],
+            price=price,
+            title=data["title"],
+            image=data["image"],
+            is_published=data["is_published"],
+            content=data["content"],
+            course_type=course_type,
+            language=data.get("course_language", None),
+            published_date=published_date,
+            short_description=data["short_description"],
+            course_slug=data["course_slug"],
+            approval_status=data["approval_status"],
+            chapters=[CourseChapter.from_json(chapter) for chapter in data.get("chapter", [])]
+        )
+
+    def list_courses(self) -> Iterable[Tuple[Course, CourseStatistics]]:
         """
 
         The API response is a JSON object with the following structure:
@@ -705,13 +688,30 @@ class Courses:
         except ValueError:
             raise CourseException("Invalid JSON response")
 
-        return [
-            (
-                Course.from_list_json(self.auth, course),
-                CourseStatistics.from_list_json(course)
+        for course in data.get("data", []):
+            if course["course_type"] == "BUNDLE":
+                course_type = CourseType.BUNDLE
+            else:
+                course_type = CourseType.SINGLE
+
+            if course["is_published"] == "PUBLISHED":
+                published = CourseStatus.PUBLISHED
+            else:
+                published = CourseStatus.DRAFT
+
+            course_obj = Course(
+                auth=self.auth,
+                identifier=course["id"],
+                title=course["title"],
+                image=course["image"],
+                is_published=published,
+                course_type=course_type,
+                published_date=course["created_at"],
+                course_slug=course["course_slug"],
+                approval_status=course["approval_status"]
             )
-            for course in data.get("data", [])
-        ]
+
+            yield course_obj, CourseStatistics.from_list_json(course)
 
     def create(self, course: Course) -> Course:
         ...

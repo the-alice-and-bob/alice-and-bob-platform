@@ -17,6 +17,19 @@ class ProductTypes(Enum):
     ORGANIZATION = 'organization'
 
 
+class UserType(Enum):
+    STUDENT = "student"
+    TEACHER = "teacher"
+    ADMIN = "admin"
+
+
+class UserStatus(Enum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+    SUSPENDED = "SUSPENDED"
+    DELETED = "DELETED"
+
+
 class Student(models.Model):
     """
     id	Id of the student.
@@ -37,6 +50,12 @@ class Student(models.Model):
     # This tag is used to store the tags from Zoho. Zoho tags contains some properties, like: id, name or color
     zoho_tags = models.JSONField(null=True, default=list)
 
+    created_date = models.DateTimeField(auto_now_add=True, null=True)
+    last_login = models.DateTimeField(null=True)
+
+    user_type = models.CharField(max_length=50, null=True, choices=[(tag, tag.value) for tag in UserType], default=UserType.STUDENT)
+    user_status = models.CharField(max_length=50, null=True, choices=[(tag, tag.value) for tag in UserStatus], default=UserStatus.ACTIVE)
+
     history = HistoricalRecords()
 
     class Meta:
@@ -49,7 +68,7 @@ class Student(models.Model):
         return f"{self.first_name} {self.last_name}"
 
     def __str__(self):
-        return f"EzyCourse ID: {self.ezy_id} - {self.first_name} {self.last_name}"
+        return f"EzyCourse ID: {self.ezy_id} - {self.first_name} {self.last_name} ({self.email})"
 
 
 class Product(models.Model):
@@ -73,11 +92,17 @@ class Product(models.Model):
     price = models.FloatField(default=0)
     tags = models.JSONField(null=True, default=list)
 
+    published_date = models.DateTimeField(null=True)
+
+    description = models.TextField(null=True)
+    image = models.URLField(null=True, max_length=500, default=None)
+    language = models.CharField(max_length=20, null=True, default='Español')
+    extra_data = models.JSONField(null=True, default=dict)
+
     # This tag is used to store the tags from Zoho. Zoho tags contains some properties, like: id, name or color
     zoho_tags = models.JSONField(null=True, default=list)
 
     history = HistoricalRecords()
-
 
     class Meta:
         db_table = 'products'
@@ -110,7 +135,6 @@ class Sells(models.Model):
 
 
 class CourseProgress(models.Model):
-
     zoho_id = models.BigIntegerField(null=True)
 
     progress = models.FloatField(default=0)

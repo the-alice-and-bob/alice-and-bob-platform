@@ -7,6 +7,9 @@ from celery import shared_task
 from .background_tasks import *
 
 
+# -------------------------------------------------------------------------
+# WebHook Background Tasks
+# -------------------------------------------------------------------------
 @shared_task(name="task_ezycourse_new_signup")
 def task_ezycourse_new_signup(info: dict):
     try:
@@ -68,3 +71,23 @@ def task_ezycourse_lesson_completed(info: dict):
     except Exception as e:
         print(f"Error while processing lesson completed: {e}")
         return False
+
+
+# -------------------------------------------------------------------------
+# Periodic Tasks
+# -------------------------------------------------------------------------
+@shared_task(name="task_update_student_progress")
+def task_update_student_progress():
+    """
+    Update the student progress for all the students
+    """
+
+
+@shared_task(name="task_populate_courses")
+def task_populate_courses():
+    """
+    Populate the courses.
+
+    This task have to be done daily.
+    """
+    populate_courses()

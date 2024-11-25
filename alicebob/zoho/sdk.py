@@ -1,7 +1,7 @@
 from awesome_zohocrm.entrypoint import ZohoCRM
 from awesome_zohocrm.auth import AuthenticationStorage, AuthException, Auth
 
-from zoho.models import ZohoOAuth
+from .models import ZohoOAuth
 
 
 class DjangoAuthenticationStorage(AuthenticationStorage):
