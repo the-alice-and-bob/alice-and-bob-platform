@@ -17,3 +17,13 @@
 | `SENTRY_DSN`          | DSN de Sentry                                     | `<secret>`                              | `<secret>`   |
 | `URL_TOKEN`           | Token de URL                                      | `<secret>`                              | `<secret>`   |
 | `DISABLE_LLM`         | Deshabilita el uso de LLM                         | `false`                                 | `true`       |
+
+
+## Populate
+
+Para poblar la base de datos hay que seguir estos pasos:
+
+1. Cargar los tags
+2. Cargar los cursos
+3. Cargar los estudiantes
+4. Cargar las ventas

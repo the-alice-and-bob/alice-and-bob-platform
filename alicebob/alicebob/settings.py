@@ -194,3 +194,10 @@ if CELERY_BROKER_URL.startswith('rediss') or CELERY_BROKER_URL.startswith('amqps
 EZYCOURSE_ADMIN_EMAIL = decouple.config('EZYCOURSE_ADMIN_EMAIL', default="cr0hn@cr0hn.com")
 EZYCOURSE_BOB_EMAIL = decouple.config('EZYCOURSE_BOB_EMAIL', default="bob@alicebob.io")
 EZYCOURSE_ALICE_EMAIL = decouple.config('EZYCOURSE_ALICE_EMAIL', default="alice@alicebob.io")
+
+# -------------------------------------------------------------------------
+# Zoho Settings
+# -------------------------------------------------------------------------
+
+# When this is set to True, the system will sync to the Zoho CRM. Otherwise, only local data will be used.
+ZOHO_ENABLE_SYNC = decouple.config('ZOHO_ENABLE_SYNC', default=False, cast=bool)

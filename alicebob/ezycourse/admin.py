@@ -10,3 +10,5 @@ from ezycourse.models import EzyCourseAuth
 class EzyCourseAuthModelAdmin(ModelAdmin, ImportExportModelAdmin):
     import_form_class = ImportForm
     export_form_class = ExportForm
+
+    list_display = ['email', 'site']

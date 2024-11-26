@@ -1,7 +1,27 @@
 from enum import Enum
 
 from django.db import models
+from model_utils.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=150, unique=True)
+    color = models.CharField(max_length=50, default='blue')
+    color_code = models.CharField(max_length=50, default='#0000FF')
+
+    class Meta:
+        db_table = 'tags'
+        verbose_name = 'Tag'
+        verbose_name_plural = 'Tags'
+
+    def __str__(self):
+        return self.name
+
+
+class PaymentGateway(Enum):
+    STRIPE = "STRIPE"
+    MANUAL = "MANUAL"
 
 
 class ProductTypes(Enum):
@@ -15,12 +35,18 @@ class ProductTypes(Enum):
     VIDEO_LIBRARY = 'video_library'
     MEMBERSHIP = 'membership'
     ORGANIZATION = 'organization'
+    EVENT = 'event'
 
 
 class UserType(Enum):
     STUDENT = "student"
     TEACHER = "teacher"
     ADMIN = "admin"
+
+
+class CourseStatus(Enum):
+    PUBLISHED = "PUBLISHED"
+    DRAFT = "DRAFT"
 
 
 class UserStatus(Enum):
@@ -30,7 +56,49 @@ class UserStatus(Enum):
     DELETED = "DELETED"
 
 
-class Student(models.Model):
+class Product(TimeStampedModel, models.Model):
+    """
+    id	Id of the student.
+    first_name	First name of the student.
+    last_name	Last name of the student.
+    name	Name of the student. Value should be 3 to 50 characters long.
+    email	Email of the student. Value should be 50 characters long.
+    product_id	Product id will be the id of the product. Value will be integer. This is required when product_type is not 'private_chat'.
+    product_type	Product type will be one of the following: 'course', 'bundle_course', 'private_chat', 'community', 'group',
+    'digital_product', 'physical_product', 'video_library', 'membership','organization'.
+    product_name	Name of the product
+    price	Price of the sold product.
+    gateway	Payment gateway of the sold product.
+    """
+    ezy_id = models.IntegerField(unique=True)
+    product_type = models.CharField(max_length=50, choices=[(tag.name, tag.value) for tag in ProductTypes], default=ProductTypes.COURSE)
+    product_name = models.CharField(max_length=100)
+    price = models.FloatField(default=0)
+    tags = models.ManyToManyField(Tag, related_name='products_tags', blank=True)
+
+    published_date = models.DateTimeField(null=True)
+
+    description = models.TextField(null=True, blank=True)
+    image = models.URLField(null=True, max_length=500, default=None)
+    language = models.CharField(max_length=20, null=True, default='Español')
+    extra_data = models.JSONField(null=True, default=dict, blank=True)
+
+    status = models.CharField(
+        max_length=50, null=True, choices=[(tag.name, tag.value) for tag in CourseStatus], default=CourseStatus.PUBLISHED
+    )
+
+    history = HistoricalRecords()
+
+    class Meta:
+        db_table = 'products'
+        verbose_name = 'Product'
+        verbose_name_plural = 'Products'
+
+    def __str__(self):
+        return f"{self.product_name}"
+
+
+class Student(TimeStampedModel, models.Model):
     """
     id	Id of the student.
     first_name	First name of the student.
@@ -38,17 +106,12 @@ class Student(models.Model):
     name	Name of the student. Value should be 3 to 50 characters long.
     email	Email of the student. Value should be 50 characters long.
     """
-    zoho_id = models.BigIntegerField(unique=True, null=True)
-    zoho_is_lead = models.BooleanField(default=True)
     ezy_id = models.IntegerField(unique=True)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     name = models.CharField(max_length=200)
     email = models.EmailField(max_length=800, unique=True)
-    tags = models.JSONField(null=True, default=list)
-
-    # This tag is used to store the tags from Zoho. Zoho tags contains some properties, like: id, name or color
-    zoho_tags = models.JSONField(null=True, default=list)
+    tags = models.ManyToManyField(Tag, related_name='students_tags', blank=True)
 
     created_date = models.DateTimeField(auto_now_add=True, null=True)
     last_login = models.DateTimeField(null=True)
@@ -68,64 +131,22 @@ class Student(models.Model):
         return f"{self.first_name} {self.last_name}"
 
     def __str__(self):
-        return f"EzyCourse ID: {self.ezy_id} - {self.first_name} {self.last_name} ({self.email})"
+        return f"{self.full_name} ({self.email})"
 
 
-class Product(models.Model):
-    """
-    id	Id of the student.
-    first_name	First name of the student.
-    last_name	Last name of the student.
-    name	Name of the student. Value should be 3 to 50 characters long.
-    email	Email of the student. Value should be 50 characters long.
-    product_id	Product id will be the id of the product. Value will be integer. This is required when product_type is not 'private_chat'.
-    product_type	Product type will be one of the following: 'course', 'bundle_course', 'private_chat', 'community', 'group',
-    'digital_product', 'physical_product', 'video_library', 'membership','organization'.
-    product_name	Name of the product
-    price	Price of the sold product.
-    gateway	Payment gateway of the sold product.
-    """
-    zoho_id = models.BigIntegerField(unique=True, null=True)
-    ezy_id = models.IntegerField(unique=True)
-    product_type = models.CharField(max_length=50, choices=[(tag, tag.value) for tag in ProductTypes])
-    product_name = models.CharField(max_length=100)
-    price = models.FloatField(default=0)
-    tags = models.JSONField(null=True, default=list)
-
-    published_date = models.DateTimeField(null=True)
-
-    description = models.TextField(null=True)
-    image = models.URLField(null=True, max_length=500, default=None)
-    language = models.CharField(max_length=20, null=True, default='Español')
-    extra_data = models.JSONField(null=True, default=dict)
-
-    # This tag is used to store the tags from Zoho. Zoho tags contains some properties, like: id, name or color
-    zoho_tags = models.JSONField(null=True, default=list)
-
-    history = HistoricalRecords()
-
-    class Meta:
-        db_table = 'products'
-        verbose_name = 'Product'
-        verbose_name_plural = 'Products'
-
-    def __str__(self):
-        return f"EzyCourse ID: {self.ezy_id} - {self.product_name}"
-
-
-class Sells(models.Model):
+class Sells(TimeStampedModel, models.Model):
     subject = models.CharField(max_length=400, null=True)
-    zoho_id = models.BigIntegerField(null=True)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    gateway = models.CharField(max_length=100)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='sells')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='sells')
+    gateway = models.CharField(max_length=100, choices=[(tag.name, tag.value) for tag in PaymentGateway], default=PaymentGateway.STRIPE)
     sell_price = models.FloatField(default=0)
-    date = models.DateTimeField(auto_now_add=True)
+
+    date = models.DateTimeField(auto_now_add=True, help_text='Date when the product was sold')
 
     history = HistoricalRecords()
 
     class Meta:
-        unique_together = ('student', 'product', 'zoho_id')
+        unique_together = ('student', 'product')
         db_table = 'sells'
         verbose_name = 'Sell'
         verbose_name_plural = 'Sells'
@@ -134,9 +155,7 @@ class Sells(models.Model):
         return f"{self.student.email} - {self.product.product_name}"
 
 
-class CourseProgress(models.Model):
-    zoho_id = models.BigIntegerField(null=True)
-
+class CourseProgress(TimeStampedModel, models.Model):
     progress = models.FloatField(default=0)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     course = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -144,9 +163,9 @@ class CourseProgress(models.Model):
     current_chapter = models.CharField(max_length=300, null=True)
     current_lesson = models.CharField(max_length=300, null=True)
 
-    completed_date = models.DateTimeField(null=True)
-    started_date = models.DateTimeField(null=True)
-    last_visit = models.DateTimeField(null=True)
+    completed_date = models.DateTimeField(null=True, help_text='Date when the course was completed')
+    started_date = models.DateTimeField(null=True, help_text='Date when the course was started')
+    last_visit = models.DateTimeField(null=True, help_text='Last visit to the course')
 
     @property
     def is_completed(self):

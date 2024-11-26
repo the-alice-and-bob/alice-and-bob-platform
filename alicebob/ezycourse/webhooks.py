@@ -14,9 +14,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from celery_app import app as background_tasks
-
-from ezycourse.background_tasks.ezycourse_webhooks import *
+from ezycourse.sdk import *
 
 from .decorators import *
 
@@ -35,7 +33,7 @@ def new_signup(request):
     name	Name of the student. Value should be 3 to 50 characters long.
     email	Email of the student. Value should be 50 characters long.
     """
-    background_tasks.send_task('task_ezycourse_new_signup', args=(request.json,))
+    ezycourse_new_signup(request.json)
 
     return JsonResponse({'message': 'New Signup Webhook'})
 
@@ -48,7 +46,7 @@ def new_product_enrollment(request):
     """
     This webhook is triggered when a user enrolls in a FREE product.
     """
-    background_tasks.send_task('task_ezycourse_new_product_enrollment', args=(request.json,))
+    ezycourse_new_product_enrollment(request.json)
 
     return JsonResponse({'message': 'New Product Enrollment Webhook'})
 
@@ -76,7 +74,7 @@ def new_sale(request):
     gateway	Payment gateway of the sold product.
 
     """
-    background_tasks.send_task('task_ezycourse_new_sale', args=(request.json,))
+    ezycourse_new_sale(request.json)
 
     return JsonResponse({'message': 'New Sale Webhook'})
 
@@ -90,7 +88,7 @@ def course_completed(request):
     This webhook is triggered when a user completes a course.
     """
 
-    background_tasks.send_task("task_ezycourse_course_completed", args=(request.json,))
+    ezycourse_course_completed(request.json)
 
     return JsonResponse({'message': 'Course Completed Webhook'})
 
@@ -103,7 +101,7 @@ def chapter_completed(request):
     """
     This webhook is triggered when a user completes a chapter.
     """
-    background_tasks.send_task("task_ezycourse_chapter_completed", args=(request.json,))
+    ezycourse_chapter_completed(request.json)
 
     return JsonResponse({'message': 'Chapter Completed Webhook'})
 
@@ -116,7 +114,7 @@ def lesson_completed(request):
     """
     This webhook is triggered when a user completes a lesson.
     """
-    background_tasks.send_task("task_ezycourse_lesson_completed", args=(request.json,))
+    ezycourse_lesson_completed(request.json)
 
     return JsonResponse({'message': 'Lesson Completed Webhook'})
 

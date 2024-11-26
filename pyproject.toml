@@ -31,6 +31,7 @@ django-guardian = "^2.4.0"
 django-simple-history = "^3.7.0"
 django-celery-beat = "^2.7.0"
 whitenoise = "^6.8.2"
+django-model-utils = "^5.0.0"
 
 
 [tool.poetry.group.dev.dependencies]

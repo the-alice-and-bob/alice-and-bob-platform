@@ -36,21 +36,21 @@ class UnfoldPeriodicTaskForm(PeriodicTaskForm):
 class PeriodicTaskAdmin(BasePeriodicTaskAdmin, ModelAdmin):
     form = UnfoldPeriodicTaskForm
 
-
-@admin.register(IntervalSchedule)
-class IntervalScheduleAdmin(ModelAdmin):
-    pass
+#
+# @admin.register(IntervalSchedule)
+# class IntervalScheduleAdmin(ModelAdmin):
+#     pass
 
 
 @admin.register(CrontabSchedule)
 class CrontabScheduleAdmin(BaseCrontabScheduleAdmin, ModelAdmin):
     pass
 
-
-@admin.register(SolarSchedule)
-class SolarScheduleAdmin(ModelAdmin):
-    pass
-
-@admin.register(ClockedSchedule)
-class ClockedScheduleAdmin(BaseClockedScheduleAdmin, ModelAdmin):
-    pass
+#
+# @admin.register(SolarSchedule)
+# class SolarScheduleAdmin(ModelAdmin):
+#     pass
+#
+# @admin.register(ClockedSchedule)
+# class ClockedScheduleAdmin(BaseClockedScheduleAdmin, ModelAdmin):
+#     pass

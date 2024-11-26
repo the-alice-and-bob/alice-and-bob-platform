@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from awesome_ezycourse.sdk import Courses, Users
+from awesome_ezycourse.sdk import Courses, Users, UserEnrollmentStatus
 from academy.models import ProductTypes, Product, Student
 
 from ..sdk import ezycourse_instance
@@ -34,20 +34,23 @@ def populate_students() -> Iterable[Student]:
 
     print(f"Listing EzyCourse courses...")
 
-    for user in Users(auth=auth).get_users():
-        student, created = Student.objects.update_or_create(
-            email=user.email,
-            defaults={
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "email": user.email,
-                "ezy_id": user.identifier,
-                "name": user.full_name,
-                "created_date": user.created_at,
-                "last_login": user.last_login,
+    for user in Users(auth=auth).get_users(only_students=True, enrollment_status=UserEnrollmentStatus.ALL):
+        try:
+            student = Student.objects.get(email=user.email)
+            already_exists = True
+        except Student.DoesNotExist:
+            already_exists = False
+            student = Student.objects.create(
+                first_name=user.first_name,
+                last_name=user.last_name,
+                email=user.email,
+                ezy_id=user.identifier,
+                name=user.full_name,
+                created_date=user.created_at,
+                last_login=user.last_login,
+            )
 
-            }
-        )
+        if already_exists:
+            continue
 
-        if created:
-            yield student
+        yield student

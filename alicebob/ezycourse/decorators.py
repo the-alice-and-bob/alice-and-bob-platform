@@ -1,5 +1,3 @@
-from idlelib.rpc import request_queue
-
 import orjson
 from django.conf import settings
 from django.http import HttpResponseForbidden, HttpResponseBadRequest

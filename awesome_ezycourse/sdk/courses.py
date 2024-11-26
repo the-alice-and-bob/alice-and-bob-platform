@@ -1,6 +1,6 @@
 from enum import Enum
 from datetime import datetime
-from typing import List, Iterable, Tuple
+from typing import List, Iterable, Tuple, Optional
 from dataclasses import dataclass, field
 
 import requests
@@ -38,6 +38,13 @@ class LessonType(Enum):
             "ASSIGNMENT": LessonType.ASSIGNMENT,
         }
         return lesson_types.get(text, LessonType.TEXT)
+
+
+class PaymentGateway(Enum):
+    STRIPE = "STRIPE"
+    MANUAL = "MANUAL"
+    COINS = "COINS"
+    FREE = "FREE"
 
 
 @dataclass
@@ -227,6 +234,7 @@ class Enrollment:
     identifier: int
     updated: datetime
     created: datetime
+    gateway: Optional[PaymentGateway] = None
     progress: int | None = None
     course_completion_date: datetime | None = None
 
@@ -314,49 +322,49 @@ class Course:
 
             for v in users_data.get("data", []):
                 """
-            API JSON response example:
-            
-            {
-              "id": 822185,
-              "course_or_bundle_id": 13232,
-              "bundle_enrollment_id": null,
-              "user_id": 710217,
-              "school_id": 794,
-              "created_at": "2024-10-10T16:39:05.000+00:00",
-              "updated_at": "2024-10-10T16:39:05.000+00:00",
-              "expire_date": null,
-              "status": "ACTIVE",
-              "pause_date": null,
-              "order_id": 268563,
-              "course_completion_date": null,
-              "certificate_url": null,
-              "certificate_id": null,
-              "is_manual": 0,
-              "plan_id": null,
-              "custom_certificate_id": null,
-              "start_date": null,
-              "last_visit_in": null,
-              "seller_id": null,
-              "ref_community_id": null,
-              "student": {
-                "id": 710217,
-                "email": "alicebob@rodriguezvazquez.com",
-                "full_name": "Fernando Rodríguez",
-                "meta": { }
-              },
-              "order": {
-                "subscription_status": "ACTIVE",
-                "gateway": "STRIPE",
-                "id": 268563,
-                "meta": { }
-              },
-              "meta": {
-                "charge_option": null,
-                "later_charge_date": null,
-                "lessons_count": 13,
-                "progress_count": 0
-              }
-            }
+                API JSON response example:
+                
+                {
+                  "id": 822185,
+                  "course_or_bundle_id": 13232,
+                  "bundle_enrollment_id": null,
+                  "user_id": 710217,
+                  "school_id": 794,
+                  "created_at": "2024-10-10T16:39:05.000+00:00",
+                  "updated_at": "2024-10-10T16:39:05.000+00:00",
+                  "expire_date": null,
+                  "status": "ACTIVE",
+                  "pause_date": null,
+                  "order_id": 268563,
+                  "course_completion_date": null,
+                  "certificate_url": null,
+                  "certificate_id": null,
+                  "is_manual": 0,
+                  "plan_id": null,
+                  "custom_certificate_id": null,
+                  "start_date": null,
+                  "last_visit_in": null,
+                  "seller_id": null,
+                  "ref_community_id": null,
+                  "student": {
+                    "id": 710217,
+                    "email": "alicebob@rodriguezvazquez.com",
+                    "full_name": "Fernando Rodríguez",
+                    "meta": { }
+                  },
+                  "order": {
+                    "subscription_status": "ACTIVE",
+                    "gateway": "STRIPE",
+                    "id": 268563,
+                    "meta": { }
+                  },
+                  "meta": {
+                    "charge_option": null,
+                    "later_charge_date": null,
+                    "lessons_count": 13,
+                    "progress_count": 0
+                  }
+                }
                 """
                 # Be careful with null dates
                 try:
@@ -390,6 +398,7 @@ class Course:
                         email=v["student"]["email"],
                         full_name=v["student"]["full_name"]
                     ),
+                    gateway=PaymentGateway(v.get("order", {}).get("gateway", None)),
                     status=v["status"],
                     order_id=v["order_id"],
                     is_manual=v["is_manual"],
