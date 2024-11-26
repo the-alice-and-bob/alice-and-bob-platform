@@ -37,7 +37,7 @@ def create_product(sender, instance, **kwargs):
 def create_student(sender, instance, **kwargs):
     try:
         zoho_lead = ZohoLead.objects.get(student=instance)
-    except ZohoContact.DoesNotExist:
+    except ZohoLead.DoesNotExist:
         zoho_lead = ZohoLead.objects.create(student=instance)
 
     if settings.ZOHO_ENABLE_SYNC:
