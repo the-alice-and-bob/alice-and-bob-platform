@@ -19,7 +19,8 @@ def ezycourse_course_completed(data: dict):
     try:
         obj = CourseCompleted.from_json(data)
     except Exception as e:
-        raise ValueError(f"Invalid data: {e}")
+        db_logger.error(f"Invalid data while processing course completed: {e}")
+        return
 
     st = get_or_create_student(obj)
 
@@ -27,7 +28,7 @@ def ezycourse_course_completed(data: dict):
         try:
             course = Product.objects.get(ezy_id=obj.course_id)
         except Product.DoesNotExist:
-            print(f"Course {obj.course_id} not found in the DB")
+            db_logger.error(f"Course {obj.course_id} not found in the DB while processing course completed")
             return
 
         try:

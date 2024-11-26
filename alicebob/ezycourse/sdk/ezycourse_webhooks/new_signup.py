@@ -13,7 +13,8 @@ def ezycourse_new_signup(data: dict):
     try:
         obj = NewSignup.from_json(data)
     except Exception as e:
-        raise ValueError(f"Invalid data: {e}")
+        db_logger.error(f"Invalid data while processing new signup: {e}")
+        return
 
     get_or_create_student(obj)
 

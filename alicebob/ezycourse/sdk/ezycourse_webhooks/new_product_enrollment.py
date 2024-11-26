@@ -17,7 +17,8 @@ def ezycourse_new_product_enrollment(data: dict):
     try:
         obj = NewProduct.from_json(data)
     except Exception as e:
-        raise ValueError(f"Invalid data: {e}")
+        db_logger.error(f"Invalid data while processing new product enrollment: {e}")
+        return
 
     student = get_or_create_student(obj)
 
@@ -28,7 +29,7 @@ def ezycourse_new_product_enrollment(data: dict):
         try:
             course = Product.objects.get(ezy_id=obj.product_id)
         except Product.DoesNotExist:
-            print(f"Course {obj.product_id} not found in the DB")
+            db_logger.error(f"Course {obj.product_id} not found in the DB while processing new sale")
             return
 
         try:
