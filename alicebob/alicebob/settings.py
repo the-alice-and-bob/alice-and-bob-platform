@@ -58,8 +58,9 @@ INSTALLED_APPS = [
 
     # Third party apps
     'django_celery_beat',
-    'import_export',
     'simple_history',
+    'import_export',
+    'django_db_logger',
 
     # Custom apps
     # 'news',
@@ -201,3 +202,36 @@ EZYCOURSE_ALICE_EMAIL = decouple.config('EZYCOURSE_ALICE_EMAIL', default="alice@
 
 # When this is set to True, the system will sync to the Zoho CRM. Otherwise, only local data will be used.
 ZOHO_ENABLE_SYNC = decouple.config('ZOHO_ENABLE_SYNC', default=False, cast=bool)
+
+# -------------------------------------------------------------------------
+# Logging
+# -------------------------------------------------------------------------
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(asctime)s %(message)s'
+        },
+    },
+    'handlers': {
+        'db_log': {
+            'level': 'DEBUG',
+            'class': 'django_db_logger.db_log_handler.DatabaseLogHandler'
+        },
+    },
+    'loggers': {
+        'db': {
+            'handlers': ['db_log'],
+            'level': 'DEBUG'
+        },
+        'django.request': { # logging 500 errors to database
+            'handlers': ['db_log'],
+            'level': 'ERROR',
+            'propagate': False,
+        }
+    }
+}

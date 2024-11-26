@@ -1,9 +1,13 @@
+import logging
+
 from django.db.transaction import atomic
 
 from academy.models import Product, Sells
 
 from .helpers import *
 from .models import NewProduct
+
+db_logger = logging.getLogger("db")
 
 
 def ezycourse_new_product_enrollment(data: dict):
@@ -41,6 +45,7 @@ def ezycourse_new_product_enrollment(data: dict):
         # Add tags to the student
         student.tags.add(*course.tags.all())
 
-        print(f"Student {student} enrolled in course {course}")
+        db_logger.info(f"Student {student} enrolled in course {course}")
+
 
 __all__ = ("ezycourse_new_product_enrollment",)

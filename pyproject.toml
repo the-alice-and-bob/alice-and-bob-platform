@@ -32,6 +32,7 @@ django-simple-history = "^3.7.0"
 django-celery-beat = "^2.7.0"
 whitenoise = "^6.8.2"
 django-model-utils = "^5.0.0"
+django-db-logger = "^0.1.13"
 
 
 [tool.poetry.group.dev.dependencies]

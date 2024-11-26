@@ -1,11 +1,14 @@
-from datetime import datetime
+import logging
 
+from datetime import datetime
 from django.db.transaction import atomic
 
 from academy.models import CourseProgress, Product
 
 from .models import ChapterCompleted
 from .helpers import get_or_create_student
+
+db_logger = logging.getLogger('db')
 
 
 def ezycourse_chapter_completed(data: dict):
@@ -35,7 +38,7 @@ def ezycourse_chapter_completed(data: dict):
         cc.last_viewed = datetime.now()
         cc.save()
 
-        print(f"Chapter {obj.chapter_name} completed by {st}")
+        db_logger.info(f"Chapter {obj.chapter_name} completed by {st}")
 
 
 __all__ = ("ezycourse_chapter_completed",)

@@ -582,6 +582,21 @@ python-crontab = ">=2.3.4"
 tzdata = "*"
 
 [[package]]
+name = "django-db-logger"
+version = "0.1.13"
+description = "Django logging in database"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-db-logger-0.1.13.tar.gz", hash = "sha256:a299a08638a741eb0b1d192f2a27eae57ed5118673c2aa916467f2e060c24e72"},
+    {file = "django_db_logger-0.1.13-py3-none-any.whl", hash = "sha256:7a1741468c4dc5e7f7cb6f06e1981b16cedff81d3d04d8d926c82b814a247133"},
+]
+
+[package.dependencies]
+django = ">=1.9"
+six = "*"
+
+[[package]]
 name = "django-guardian"
 version = "2.4.0"
 description = "Implementation of per object permissions for Django."
@@ -2035,4 +2050,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "9f83387009a983b639e6e6422ca6e0d6c50c73bb55eb17431de13d0b100a4ea3"
+content-hash = "05c4066b87ef54928284fd9ee0aeb1555ba199b0771c7b995a9607f714bcf619"

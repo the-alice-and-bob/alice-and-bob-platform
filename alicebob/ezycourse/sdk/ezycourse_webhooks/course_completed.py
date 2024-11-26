@@ -1,3 +1,5 @@
+import logging
+
 from datetime import datetime
 
 from django.db.transaction import atomic
@@ -6,6 +8,8 @@ from academy.models import CourseProgress, Product
 
 from .models import CourseCompleted
 from .helpers import get_or_create_student
+
+db_logger = logging.getLogger('db')
 
 
 def ezycourse_course_completed(data: dict):
@@ -36,7 +40,7 @@ def ezycourse_course_completed(data: dict):
         cc.progress = 100
         cc.save()
 
-        print(f"Course {obj.course_name} completed by {st}")
+        db_logger.info(f"Course {obj.course_name} completed by {st}")
 
 
 __all__ = ("ezycourse_course_completed",)

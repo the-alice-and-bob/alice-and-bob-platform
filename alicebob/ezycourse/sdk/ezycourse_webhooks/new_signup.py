@@ -1,5 +1,9 @@
+import logging
+
 from .models import NewSignup
 from .helpers import get_or_create_student
+
+db_logger = logging.getLogger('db')
 
 
 def ezycourse_new_signup(data: dict):
@@ -13,7 +17,7 @@ def ezycourse_new_signup(data: dict):
 
     get_or_create_student(obj)
 
-    print(f"Student {obj.email} signed up")
+    db_logger.info(f"Student {obj.email} signed up")
 
 
 __all__ = ("ezycourse_new_signup",)
