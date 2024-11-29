@@ -4,7 +4,7 @@ from unfold.admin import ModelAdmin
 from import_export.admin import ImportExportModelAdmin
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
 
-from academy.models import Product, Sells, Student, CourseProgress, Tag
+from .models import Product, Sells, Student, CourseProgress, Tag
 
 
 # Register your models here.

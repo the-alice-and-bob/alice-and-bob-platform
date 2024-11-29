@@ -4,12 +4,13 @@ from unfold.admin import ModelAdmin
 from import_export.admin import ImportExportModelAdmin
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
 
+from awesome_admin.mixing import SuperUserOnlyMixin
 from zoho.models import ZohoOAuth, ZohoTag, ZohoLead, ZohoContact, ZohoPurchaseOrders, ZohoCourseProgress, ZohoProduct
 
 
 # Register your models here.
 @admin.register(ZohoOAuth)
-class ZohoOAuthModelAdmin(ModelAdmin, ImportExportModelAdmin):
+class ZohoOAuthModelAdmin(SuperUserOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     import_form_class = ImportForm
     export_form_class = ExportForm
 
@@ -17,7 +18,7 @@ class ZohoOAuthModelAdmin(ModelAdmin, ImportExportModelAdmin):
 
 
 @admin.register(ZohoTag)
-class ZohoTagModelAdmin(ModelAdmin, ImportExportModelAdmin):
+class ZohoTagModelAdmin(SuperUserOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     import_form_class = ImportForm
     export_form_class = ExportForm
 
@@ -37,7 +38,7 @@ class ZohoTagModelAdmin(ModelAdmin, ImportExportModelAdmin):
 
 
 @admin.register(ZohoLead)
-class ZohoLeadModelAdmin(ModelAdmin, ImportExportModelAdmin):
+class ZohoLeadModelAdmin(SuperUserOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     import_form_class = ImportForm
     export_form_class = ExportForm
 
@@ -56,7 +57,7 @@ class ZohoLeadModelAdmin(ModelAdmin, ImportExportModelAdmin):
 
 
 @admin.register(ZohoContact)
-class ZohoContactModelAdmin(ModelAdmin, ImportExportModelAdmin):
+class ZohoContactModelAdmin(SuperUserOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     import_form_class = ImportForm
     export_form_class = ExportForm
 
@@ -75,7 +76,7 @@ class ZohoContactModelAdmin(ModelAdmin, ImportExportModelAdmin):
 
 
 @admin.register(ZohoPurchaseOrders)
-class ZohoPurchaseOrdersModelAdmin(ModelAdmin, ImportExportModelAdmin):
+class ZohoPurchaseOrdersModelAdmin(SuperUserOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     import_form_class = ImportForm
     export_form_class = ExportForm
 
@@ -91,7 +92,7 @@ class ZohoPurchaseOrdersModelAdmin(ModelAdmin, ImportExportModelAdmin):
 
 
 @admin.register(ZohoCourseProgress)
-class ZohoCourseProgressModelAdmin(ModelAdmin, ImportExportModelAdmin):
+class ZohoCourseProgressModelAdmin(SuperUserOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     import_form_class = ImportForm
     export_form_class = ExportForm
 

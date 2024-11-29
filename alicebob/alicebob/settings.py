@@ -16,6 +16,7 @@ import dj_database_url
 
 from pathlib import Path
 
+from django.templatetags.static import static
 from pygments.lexer import default
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,13 +42,17 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    # The order is important
+    'awesome_admin',
 
     # Unfold
-    'unfold',
-    'unfold.contrib.filters',
-    'unfold.contrib.import_export',
-    'unfold.contrib.guardian',
-    'unfold.contrib.simple_history',
+    "unfold",  # before django.contrib.admin
+    "unfold.contrib.filters",  # optional, if special filters are needed
+    "unfold.contrib.forms",  # optional, if special form elements are needed
+    "unfold.contrib.inlines",  # optional, if special inlines are needed
+    "unfold.contrib.import_export",  # optional, if django-import-export package is used
+    "unfold.contrib.guardian",  # optional, if django-guardian package is used
+    "unfold.contrib.simple_history",  # optional, if django-simple-history package is used
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -55,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     # Third party apps
     'django_celery_beat',
@@ -63,11 +69,10 @@ INSTALLED_APPS = [
     'django_db_logger',
 
     # Custom apps
-    # 'news',
     'zoho',
     'academy',
-    'awesome_admin',
     'ezycourse',
+    'news',
 ]
 
 
@@ -139,7 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Madrid'
 
 USE_I18N = True
 
@@ -235,3 +240,29 @@ LOGGING = {
         }
     }
 }
+
+# -------------------------------------------------------------------------
+# Unfold settings
+# -------------------------------------------------------------------------
+UNFOLD = {
+    "SITE_TITLE": "Alice & Bob - Backstage",
+    "SITE_HEADER": "Alice & Bob - Backstage",
+    "ENVIRONMENT": "alicebob.environment_callback",
+    "SITE_LOGO": {
+        "light": lambda request: static('awesome_admin/logo-512x512.png'),
+        "dark": lambda request: static('awesome_admin/logo-512x512.png'),
+    },
+    "SIDEBAR": {
+        "show_search": True,
+    },
+    "DASHBOARD_CALLBACK": "awesome_admin.views.dashboard_callback",
+}
+
+
+def environment_callback(request):
+
+    if DEBUG:
+        return ["Development", "info"]
+    else:
+        return ["Production", "danger"]
+
