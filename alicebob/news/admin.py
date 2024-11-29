@@ -18,7 +18,6 @@ class NewsAdminForm(ModelForm):
         widgets = {
             'content': WysiwygWidget(),
             'telegram_text': WysiwygWidget(),
-            'tags': models.SelectMultiple(attrs={'size': 10}),
         }
 
 
