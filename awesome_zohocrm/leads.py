@@ -88,23 +88,21 @@ class ZohoLeads(BaseModule, ModuleInterface):
         except ModuleException as e:
             raise LeadResponseException(e)
 
-    def create(self, lead: Lead) -> bool | LeadDuplicatedException | LeadResponseException | None:
+    def create(self, lead: Lead) -> int | LeadDuplicatedException | LeadResponseException | None:
         """
         This method creates a new lead in Zoho CRM and updates the lead object with the new data.
 
-        :return: A message with the result of the operation.
+        :return: The identifier of the new lead.
         """
         lead_dict = lead.as_zoho()
 
         try:
-            self._create_record(module_name=self.api_name, data=lead_dict)
+            return self._create_record(module_name=self.api_name, data=lead_dict)
         except ModuleRecordDuplicatedException as e:
             raise LeadDuplicatedException(e)
 
         except ModuleException as e:
             raise LeadResponseException(e)
-
-        return True
 
     def convert_lead(self, lead: Lead | int):
         if isinstance(lead, Lead):
