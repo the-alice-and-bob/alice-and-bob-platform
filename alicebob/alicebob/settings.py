@@ -71,7 +71,6 @@ INSTALLED_APPS = [
     'cacheops',
 
     # Custom apps
-    'zoho',
     'academy',
     'ezycourse',
     'news',
