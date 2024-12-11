@@ -1,0 +1,21 @@
+{% extends "admin/import_export/change_list_import_export.html" %}
+{% load i18n unfold %}
+{% load admin_urls i18n %}
+
+{% block actions-items %}
+
+    {# Solo para el modelo  "maillist   #}
+    {% if opts.model_name == "maillist" %}
+        {% url "admin:reload-mail-list" as link %}
+        {% include "unfold/helpers/tab_action.html" with title="Recargar listas" link=link %}
+    {% endif %}
+
+    {# Solo para el modelo  "products"   #}
+    {% if opts.model_name == "product" %}
+        {% url "admin:create-acumbamail-lists" as link %}
+        {% include "unfold/helpers/tab_action.html" with title="Sync Acumbamail" link=link %}
+    {% endif %}
+
+    {% include "admin/import_export/change_list_import_item.html" %}
+    {% include "admin/import_export/change_list_export_item.html" %}
+{% endblock %}

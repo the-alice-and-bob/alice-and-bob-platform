@@ -16,12 +16,13 @@ import dj_database_url
 
 from pathlib import Path
 
+from django.urls import reverse_lazy
 from django.templatetags.static import static
+from django.utils.translation import gettext_lazy as _
 from pygments.lexer import default
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -67,14 +68,15 @@ INSTALLED_APPS = [
     'simple_history',
     'import_export',
     'django_db_logger',
+    'cacheops',
 
     # Custom apps
     'zoho',
     'academy',
     'ezycourse',
     'news',
+    'campaigns',
 ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -111,7 +113,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'alicebob.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -119,6 +120,21 @@ DATABASES = {
     'default': dj_database_url.config(default=decouple.config('DATABASE_URL', default='sqlite:///db.sqlite3')),
 }
 
+REDIS_URL = decouple.config('REDIS_URL', default="redis://localhost:6900/0")
+
+CACHES = {
+    'default': {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        'LOCATION': REDIS_URL,
+    },
+}
+
+CACHEOPS_REDIS = REDIS_URL
+CACHEOPS = {
+    'auth.*': {'ops': 'all', 'timeout': 60 * 60 * 24},
+    'academy.*': {'ops': 'all', 'timeout': 60 * 5},
+    "*.*": {'timeout': 60 * 60},
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -138,7 +154,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -149,7 +164,6 @@ TIME_ZONE = 'Europe/Madrid'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -233,7 +247,7 @@ LOGGING = {
             'handlers': ['db_log'],
             'level': 'DEBUG'
         },
-        'django.request': { # logging 500 errors to database
+        'django.request': {  # logging 500 errors to database
             'handlers': ['db_log'],
             'level': 'ERROR',
             'propagate': False,
@@ -242,27 +256,133 @@ LOGGING = {
 }
 
 # -------------------------------------------------------------------------
-# Unfold settings
+# Unfold settings: settings el tema de Django Admin: https://unfoldadmin.com/
 # -------------------------------------------------------------------------
+
+# LOS ICONOS SE PUEDEN ENCONTRAR EN: https://fonts.google.com/icons
 UNFOLD = {
     "SITE_TITLE": "Alice & Bob - Backstage",
     "SITE_HEADER": "Alice & Bob - Backstage",
-    "ENVIRONMENT": "alicebob.environment_callback",
+    "ENVIRONMENT": "awesome_admin.unfold_callbacks.environment_callback",
     "SITE_LOGO": {
         "light": lambda request: static('awesome_admin/logo-512x512.png'),
         "dark": lambda request: static('awesome_admin/logo-512x512.png'),
     },
+    "DASHBOARD_CALLBACK": "awesome_admin.unfold_callbacks.dashboard_callback",
+    "TABS": [
+        {
+            "models": [
+                "academy.student",
+            ],
+            "items": [
+                {
+                    # Todos los estudiantes
+                    "title": _("Estudiantes"),
+                    "link": reverse_lazy("admin:academy_student_changelist"),
+                },
+                {
+                    # Leads solo
+                    "title": _("Leads"),
+                    "link": reverse_lazy("admin:admin-student-leads"),
+                },
+                {
+                    # de pago
+                    "title": _("Estudiantes que han comprado"),
+                    "link": reverse_lazy("admin:admin-student-paid"),
+                }
+            ]
+        }
+    ],
     "SIDEBAR": {
         "show_search": True,
+        "navigation": [
+            {
+                "title": _("Academia"),
+                "separator": True,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": _("Estudiantes"),
+                        "link": reverse_lazy("admin:academy_student_changelist"),
+                        "icon": "people",
+                    },
+                    {
+                        "title": _("Cursos"),
+                        "link": reverse_lazy("admin:academy_product_changelist"),
+                        "icon": "school",
+                    },
+                    {
+                        "title": _("Ventas"),
+                        "link": reverse_lazy("admin:academy_sells_changelist"),
+                        "icon": "shopping_cart",
+                    },
+                    {
+                        "title": _("Tags"),
+                        "link": reverse_lazy("admin:academy_tag_changelist"),
+                        "icon": "label",
+                    },
+                ]
+            },
+
+            {
+                # Marketing
+                "title": _("Marketing"),
+                "separator": True,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": _("Campañas"),
+                        "link": reverse_lazy("admin:campaigns_dailyemail_changelist"),
+                        "icon": "email",
+                    },
+                    {
+                        "title": _("News"),
+                        "link": reverse_lazy("admin:news_news_changelist"),
+                        "icon": "article",
+                    },
+                    {
+                        # listas
+                        "title": _("Listas"),
+                        "link": reverse_lazy("admin:campaigns_maillist_changelist"),
+                        "icon": "list",
+                    }
+                ]
+            },
+
+            # Admin de django: Grupos y usuarios
+            {
+                "title": _("Administración"),
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Logs"),
+                        "link": reverse_lazy("admin:django_db_logger_statuslog_changelist"),
+                        "icon": "password",
+                    },
+                    {
+                        "title": _("Usuarios"),
+                        "link": reverse_lazy("admin:auth_user_changelist"),
+                        "icon": "people",
+                    },
+                    {
+                        "title": _("Grupos"),
+                        "link": reverse_lazy("admin:auth_group_changelist"),
+                        "icon": "communities",
+                    },
+                ]
+            }
+        ]
     },
-    "DASHBOARD_CALLBACK": "awesome_admin.views.dashboard_callback",
 }
 
 
-def environment_callback(request):
-
-    if DEBUG:
-        return ["Development", "info"]
-    else:
-        return ["Production", "danger"]
-
+# -------------------------------------------------------------------------
+# Acumbamail
+# -------------------------------------------------------------------------
+ACUMBAMAIL_TOKEN = decouple.config('ACUMBAMAIL_TOKEN', default=None)
+DEFAULT_SENDER_COUNTRY = decouple.config('DEFAULT_SENDER_COUNTRY', default="Estonia")
+DEFAULT_SENDER_COMPANY = decouple.config('DEFAULT_SENDER_COMPANY', default="Zylentech OÜ")
+DEFAULT_SENDER_EMAIL = decouple.config('DEFAULT_SENDER_EMAIL', default="hello@alicebob.io")
+DEFAULT_SENDER_NAME = decouple.config('DEFAULT_SENDER_NAME', default="Alice")
+DEFAULT_LIST_ID = decouple.config('DEFAULT_LIST_ID', default=1035387, cast=int)
