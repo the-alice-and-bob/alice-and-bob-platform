@@ -8,7 +8,6 @@ import json
 import datetime
 
 from enum import Enum
-from idlelib.autocomplete import TRY_A
 from time import sleep
 
 from urllib.parse import urljoin
