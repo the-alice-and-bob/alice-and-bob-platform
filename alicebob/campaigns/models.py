@@ -3,6 +3,8 @@ from django.db import models
 from model_utils.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
+from academy.models import Student
+
 
 class MailList(TimeStampedModel, models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -12,6 +14,8 @@ class MailList(TimeStampedModel, models.Model):
     subscribers = models.IntegerField(default=0)
     unsubscribed = models.IntegerField(default=0)
     bounced = models.IntegerField(default=0)
+
+    users = models.ManyToManyField(Student, related_name="mail_lists", blank=True)
 
     active = models.BooleanField(default=True)
 

@@ -55,6 +55,7 @@ class MailListAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     list_filter = ['name']
     list_per_page = 10
     list_max_show_all = 100
+    ordering = ['-subscribers']
 
     def active_bullet(self, obj):
         return True if obj.active else False

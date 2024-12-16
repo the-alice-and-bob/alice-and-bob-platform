@@ -43,9 +43,6 @@ def ezycourse_new_sale(data: dict):
                 sell_price=obj.price,
             )
 
-        # Add tags to the student
-        student.tags.add(*course.tags.all())
-
         db_logger.info(f"Student {student} enrolled in course {course}")
 
 

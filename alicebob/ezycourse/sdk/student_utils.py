@@ -28,7 +28,7 @@ def check_and_update_student_progress():
 
 def populate_students() -> Iterable[Student]:
     """
-    Populate the DB with Ezycourse students
+    Populate the DBd with Ezycourse students
     """
     auth = ezycourse_instance()
 

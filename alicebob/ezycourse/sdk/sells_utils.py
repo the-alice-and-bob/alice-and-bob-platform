@@ -2,7 +2,7 @@ from typing import Iterable, Tuple
 
 from django.db.transaction import atomic
 
-from awesome_ezycourse.sdk import Courses
+from awesome_ezycourse.sdk import Courses, Communities
 from academy.models import Product, Student, Sells, CourseProgress
 
 from ..sdk import ezycourse_instance
@@ -14,6 +14,46 @@ def populate_sells() -> Iterable[Tuple[Student, Product]]:
     """
     auth = ezycourse_instance()
 
+    # -------------------------------------------------------------------------
+    # Now we need to get the list of communities
+    # -------------------------------------------------------------------------
+    for community in Communities(auth).list():
+
+        # Get community db object
+        try:
+            product = Product.objects.get(ezy_id=community.identifier)
+        except Product.DoesNotExist:
+            print(f"Community {community.identifier} not found in the DB")
+            continue
+
+        # Get enrolled students
+        for member in community.list_members():
+
+            with atomic():
+
+                # Get the student
+                try:
+                    student = Student.objects.get(ezy_id=member.identifier)
+                except Student.DoesNotExist:
+                    print(f"Student {member.identifier} not found in the DB from community {community.identifier} or is an admin")
+                    continue
+
+                try:
+                    Sells.objects.get(student=student, product=product)
+                except Sells.DoesNotExist:
+                    Sells.objects.create(
+                        student=student,
+                        product=product,
+                        subject=product.product_name,
+                        sell_price=product.price,
+                        date=member.last_login
+                    )
+
+                yield student, product
+
+    # -------------------------------------------------------------------------
+    # First we need to get the list of courses
+    # -------------------------------------------------------------------------
     for ezy_course, _ in Courses(auth).list_courses():
 
         # Get course db object
@@ -38,12 +78,17 @@ def populate_sells() -> Iterable[Tuple[Student, Product]]:
                 try:
                     Sells.objects.get(student=student, product=course)
                 except Sells.DoesNotExist:
+                    if enrollment.user_paid_course:
+                        sell_price = course.price
+                    else:
+                        sell_price = 0
+
                     Sells.objects.create(
                         student=student,
                         product=course,
                         subject=course.product_name,
                         gateway=enrollment.gateway,
-                        sell_price=course.price,
+                        sell_price=sell_price,
                         date=enrollment.created,
                     )
 
@@ -71,9 +116,6 @@ def populate_sells() -> Iterable[Tuple[Student, Product]]:
 
                 if updated:
                     course_progress.save()
-
-                # Update Student tags
-                student.tags.add(*course.tags.all())
 
                 yield student, course
 

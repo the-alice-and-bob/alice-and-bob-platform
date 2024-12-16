@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.shortcuts import render
+from django.db.models import Sum, F
+
 from academy.models import Student, Sells
 from news.models import News
 
@@ -13,12 +15,14 @@ def dashboard_callback(request, context: dict):
         "headers": ["Nombre", "Apellido", "Email", "Fecha de registro"],
         "rows": [
             [
-                student.first_name,
-                student.last_name,
-                student.email,
-                student.created
+                student["first_name"],
+                student["last_name"],
+                student["email"],
+                student["created"]
             ]
-            for student in Student.objects.order_by('-created')[:5]
+            for student in Student.objects.values(
+                "first_name", "last_name", "email", "created"
+            ).order_by('-created')[:5]
         ]
     }
 
@@ -26,14 +30,32 @@ def dashboard_callback(request, context: dict):
         "headers": ["Nombre", "Apellido", "Email", "Fecha de compra", "Producto", "Precio"],
         "rows": [
             [
-                sl.student.first_name,
-                sl.student.last_name,
-                sl.student.email,
-                sl.created,
-                sl.product.product_name,
-                sl.product.price
+                sl["student__first_name"],
+                sl["student__last_name"],
+                sl["student__email"],
+                sl["created"],
+                sl["product__product_name"],
+                sl["sell_price"]
             ]
-            for sl in Sells.objects.order_by('-created')[:10]
+            for sl in Sells.objects.prefetch_related("student", "product").values(
+                "student__first_name", "student__last_name", "student__email", "created", "product__product_name", "sell_price"
+            ).order_by('-created')[:5]
+        ]
+    }
+
+    table_engagement = {
+        "headers": ["Nombre", "Apellido", "Email", "Score total", "Score de compras"],
+        "rows": [
+            [
+                student["first_name"],
+                student["last_name"],
+                student["email"],
+                student["total_score"],
+                student["purchase_score"]
+            ]
+            for student in Student.objects.values(
+                "first_name", "last_name", "email", "purchase_score", "total_score"
+            ).order_by("-total_score")[:5]
         ]
     }
 
@@ -43,8 +65,14 @@ def dashboard_callback(request, context: dict):
         'sales_count': sales_count,
         'news_count': news_count,
         'latest_students': latest_students_enrolled,
-        'latest_sales': latest_sales
+        'latest_sales': latest_sales,
+        'table_engagement': table_engagement
     })
+
+    # -------------------------------------------------------------------------
+    # Engagement de los usuarios
+    # -------------------------------------------------------------------------
+    # Query para usuarios con mayor engagement pagado considerando scoring total y de compras
 
     return context
 

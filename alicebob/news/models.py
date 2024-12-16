@@ -15,7 +15,8 @@ class NewsState(Enum):
 
 class NewsTag(TimeStampedModel, models.Model):
     name = models.CharField(max_length=255, db_index=True)
-    color = models.CharField(max_length=7, default="#000000")
+    color = models.CharField(max_length=40, default="blue")
+    color_code = models.CharField(max_length=7, default="#000000")
 
     def __str__(self):
         return self.name

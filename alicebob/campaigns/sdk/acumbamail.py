@@ -41,6 +41,9 @@ class AcumbamailAPI:
                 time.sleep(10)
                 continue
 
+            if response.status_code != 200:
+                print(f"Acumbamail API error: {response.text}")
+
             break
 
         try:
@@ -63,14 +66,13 @@ class AcumbamailAPI:
             campaign_name: str,
             subject: str,
             body: str,
-            list_id: int = None,
+            list_id: int,
             sender_name: str = None,
             sender_email: str = None,
             scheduled_date: datetime = None,
     ):
-        sender_name = sender_name or settings.DEFAULT_SENDER_NAME
-        sender_email = sender_email or settings.DEFAULT_SENDER_EMAIL
-        list_id = list_id or settings.DEFAULT_LIST_ID
+        sender_name = sender_name or settings.ACUMBAMAIL_SENDER_NAME
+        sender_email = sender_email or settings.ACUMBAMAIL_SENDER_EMAIL
 
         html_content = f"""<body>
 {body}
@@ -98,19 +100,24 @@ class AcumbamailAPI:
 
         return self._call_api("createCampaign", data)
 
-    def add_subscriber(self, email: str, name: str, ezycourse_id: str, list_id: str = None):
-        list_id = list_id or settings.DEFAULT_LIST_ID
+    def add_subscriber(self, email: str, name: str, list_id: str | int):
 
         data = {
             "list_id": list_id,
             "merge_fields": {
                 "email": email,
-                "name": name,
-                "ezycourse_id": ezycourse_id,
+                "name": name
             }
 
         }
         return self._call_api("addSubscriber", data)
+
+    def delete_subscriber(self, email: str, list_id: str | int):
+        data = {
+            "list_id": list_id,
+            "email": email
+        }
+        return self._call_api("deleteSubscriber", data)
 
     # -------------------------------------------------------------------------
     # Mail List
@@ -118,10 +125,10 @@ class AcumbamailAPI:
     def create_mail_list(self, name, description):
         data = {
             "name": name,
-            "sender_email": settings.DEFAULT_SENDER_EMAIL,
-            "company": settings.DEFAULT_SENDER_COMPANY,
+            "sender_email": settings.ACUMBAMAIL_SENDER_EMAIL,
+            "company": settings.ACUMBAMAIL_SENDER_COMPANY,
             "description": description,
-            "country": settings.DEFAULT_SENDER_COUNTRY,
+            "country": settings.ACUMBAMAIL_SENDER_COUNTRY,
         }
         return self._call_api("createList", data)
 
@@ -144,6 +151,8 @@ class AcumbamailAPI:
                     identifier=k,
                     description=v['description'],
                 )
+
+            time.sleep(1)
 
     def get_list_subscribers(self, list_id):
         return self._call_api("getSubscribers", {"list_id": list_id})

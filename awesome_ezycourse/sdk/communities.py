@@ -8,6 +8,7 @@ import json
 import datetime
 
 from enum import Enum
+from idlelib.autocomplete import TRY_A
 from time import sleep
 
 from urllib.parse import urljoin
@@ -381,7 +382,18 @@ class CommunitySpace:
         )
 
 
+@dataclass
+class CommunityMember:
+    identifier: int
+    is_online: bool
+    full_name: str
+    last_login: datetime.datetime
+    profile_pic: str
+    feeds_count: int
+
+
 class Community:
+    COMMUNITY_LIST_MEMBERS_URL = "/api/teacher/community/getMembersForCommunity/{}?str=&page=1&limit=10"
     CREATE_POST_URL = "/api/teacher/community/createFeed"
     SPACES_URL = "/api/public/communities/{community_id}/spaces"
 
@@ -480,6 +492,52 @@ class Community:
 
         raise CommunityException(f"Space with id {space_id} not found")
 
+    def list_members(self):
+        try:
+            _url = urljoin(self.auth.site, self.COMMUNITY_LIST_MEMBERS_URL.format(self.identifier))
+            _response = requests.get(_url, headers=self.auth.get_headers())
+
+            """
+            Response example:
+            [
+                {
+                    "id": 2609,
+                    "is_online": "0",
+                    "full_name": "Daniel Garcia",
+                    "last_login": "2024-10-29T09:17:32.000+00:00",
+                    "profile_pic": "https://letcheck.b-cdn.net/794/clx8skilr004n0z8zh36x2ltg.jpg",
+                    "user_type": "SITE_OWNER",
+                    "is_private_chat": 0,
+                    "is_blocked_by_me": null,
+                    "is_blocked_by_user": null,
+                    "meta":
+                    {
+                        "feeds_count": 21
+                    }
+                }
+            ]
+            """
+
+            data = _response.json()
+
+            for member in data:
+                if member.get("last_login"):
+                    last_login = datetime.datetime.fromisoformat(member["last_login"])
+                else:
+                    last_login = None
+
+                yield CommunityMember(
+                    identifier=member["id"],
+                    is_online=bool(int(member["is_online"])),
+                    full_name=member["full_name"],
+                    last_login=last_login,
+                    profile_pic=member["profile_pic"],
+                    feeds_count=member.get("meta", {}).get("feeds_count", 0)
+                )
+
+        except requests.exceptions.RequestException as e:
+            raise CommunityException(f"Error fetching members: {e}")
+
     # -------------------------------------------------------------------------
     # Alternative constructors
     # -------------------------------------------------------------------------
@@ -504,7 +562,7 @@ class Community:
             pricing_type=price_type,
             slug=data["slug"],
             total_members=data["total_members"],
-            pricing=data["pricing"],
+            pricing=data.get("pricing", {}).get("price", 0),
             about=None,
             short_description=None
         )
@@ -690,8 +748,10 @@ class Communities:
             raise CommunityException(f"Community with id {community_id} not found")
 
 
-__all__ = ("Communities", "Community", "CommunitySpace", "CommunityPricing", "CommunityPrivacy", "PricingTypes", "CommunityException")
-
+__all__ = (
+    "Communities", "Community", "CommunitySpace", "CommunityPricing", "CommunityPrivacy", "PricingTypes", "CommunityException",
+    "CommunityMember", "CommunityPost", "PostMetaLink"
+)
 
 if __name__ == "__main__":
 

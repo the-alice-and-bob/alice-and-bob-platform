@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Populate Sells" type="PythonConfigurationType" factoryName="Python">
+  <configuration default="false" name="Populate Courses from EzyCourse" type="PythonConfigurationType" factoryName="Python" folderName="EzyCourse">
     <module name="alicebob-platform" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
@@ -25,7 +25,7 @@
       </ENTRIES>
     </EXTENSION>
     <option name="SCRIPT_NAME" value="manage.py" />
-    <option name="PARAMETERS" value="populate_ezycourse_sells" />
+    <option name="PARAMETERS" value="populate_ezycourse_courses" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />

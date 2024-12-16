@@ -238,6 +238,9 @@ class Enrollment:
     progress: int | None = None
     course_completion_date: datetime | None = None
 
+    # This is a flag to know if the user has paid for the course
+    user_paid_course: bool = False
+
 
 @dataclass
 class Course:
@@ -322,7 +325,7 @@ class Course:
 
             for v in users_data.get("data", []):
                 """
-                API JSON response example:
+                API JSON response example for PAID users:
                 
                 {
                   "id": 822185,
@@ -366,6 +369,75 @@ class Course:
                   }
                 }
                 """
+
+                """
+                Example for FREE users:
+                
+                {
+                    "meta":
+                        {
+                            "total": 587,
+                            "per_page": 10,
+                            "current_page": 1,
+                            "last_page": 59,
+                            "first_page": 1,
+                            "first_page_url": "/?page=1",
+                            "last_page_url": "/?page=59",
+                            "next_page_url": "/?page=2",
+                            "previous_page_url": null
+                        },
+                        "data":
+                        [
+                            {
+                                "id": 439093,
+                                "course_or_bundle_id": 10978,
+                                "bundle_enrollment_id": null,
+                                "user_id": 697843,
+                                "school_id": 794,
+                                "created_at": "2024-07-30T07:43:10.000+00:00",
+                                "updated_at": "2024-07-30T07:43:10.000+00:00",
+                                "expire_date": null,
+                                "status": "ACTIVE",
+                                "pause_date": null,
+                                "order_id": 194294,
+                                "course_completion_date": null,
+                                "certificate_url": null,
+                                "certificate_id": null,
+                                "is_manual": 0,
+                                "plan_id": null,
+                                "custom_certificate_id": null,
+                                "start_date": null,
+                                "last_visit_in": null,
+                                "seller_id": null,
+                                "ref_community_id": null,
+                                "order":
+                                {
+                                    "subscription_status": "ACTIVE",
+                                    "gateway": "FREE",
+                                    "id": 194294,
+                                    "meta":
+                                    {}
+                                },
+                                "student":
+                                {
+                                    "id": 697843,
+                                    "full_name": "Antonio  Moreno ",
+                                    "meta":
+                                    {},
+                                    "email": "netmiyerapub@gmail.com"
+                                },
+                                "meta":
+                                {
+                                    "charge_option": null,
+                                    "later_charge_date": null,
+                                    "lessons_count": 19,
+                                    "progress_count": 0
+                                }
+                            }
+                        ]
+                }
+                """
+
                 # Be careful with null dates
                 try:
                     start_date = datetime.strptime(v["start_date"], "%Y-%m-%dT%H:%M:%S.%f%z")
@@ -392,6 +464,12 @@ class Course:
                 except:
                     course_completion_date = None
 
+                # Check if the user paid for the course
+                if v["order"]["gateway"] in (PaymentGateway.FREE.value, PaymentGateway.MANUAL.value):
+                    user_paid_course = False
+                else:
+                    user_paid_course = True
+
                 yield Enrollment(
                     student=User(
                         identifier=v["student"]["id"],
@@ -408,7 +486,8 @@ class Course:
                     updated=updated,
                     created=created,
                     progress=v.get("meta", {}).get("progress_count", 0),
-                    course_completion_date=course_completion_date
+                    course_completion_date=course_completion_date,
+                    user_paid_course=user_paid_course
                 )
 
     def __repr__(self):

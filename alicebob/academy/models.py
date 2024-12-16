@@ -1,8 +1,37 @@
 from enum import Enum
 
 from django.db import models
+from django.utils.text import slugify
 from model_utils.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
+
+
+# -------------------------------------------------------------------------
+# Scoring values
+# -------------------------------------------------------------------------
+class PurchaseScore:
+    FREE = 15
+    PAID = 100
+
+
+class UserScore:
+    """
+    - purchase_score:	0.5	- Es el indicador principal de valor económico.
+    - engagement_score:	0.2	- Representa el uso activo y sostenido de productos.
+    - community_score:	0.1	- Participación social contribuye al ecosistema.
+    - retention_score:	0.15 -	Retorno a la plataforma indica lealtad.
+    - email_engagement_score:	0.05 - Interacción con correos muestra interés (menos relevante).
+    """
+    PURCHASE_SCORE = 0.5
+    ENGAGEMENT_SCORE = 0.2
+    COMMUNITY_SCORE = 0.1
+    RETENTION_SCORE = 0.15
+    EMAIL_ENGAGEMENT_SCORE = 0.05
+
+
+# -------------------------------------------------------------------------
+# End Scoring values
+# -------------------------------------------------------------------------
 
 
 class Tag(models.Model):
@@ -11,7 +40,7 @@ class Tag(models.Model):
     color_code = models.CharField(max_length=50, default='#0000FF')
 
     class Meta:
-        db_table = 'tags'
+        db_table = 'academy_tags'
         verbose_name = 'Tag'
         verbose_name_plural = 'Tags'
 
@@ -71,7 +100,9 @@ class Product(TimeStampedModel, models.Model):
     gateway	Payment gateway of the sold product.
     """
     ezy_id = models.IntegerField(unique=True)
-    product_type = models.CharField(max_length=50, choices=[(tag.name, tag.value) for tag in ProductTypes], default=ProductTypes.COURSE)
+    product_type = models.CharField(
+        max_length=50, choices=[(tag.name, tag.value) for tag in ProductTypes], default=ProductTypes.COURSE.value
+    )
     product_name = models.CharField(max_length=100)
     price = models.FloatField(default=0)
     tags = models.ManyToManyField(Tag, related_name='products_tags', blank=True)
@@ -87,7 +118,15 @@ class Product(TimeStampedModel, models.Model):
         max_length=50, null=True, choices=[(tag.name, tag.value) for tag in CourseStatus], default=CourseStatus.PUBLISHED
     )
 
+    engagement_score = models.FloatField(default=20, help_text="Peso adicional para el score del estudiante al comprar este producto.")
+
     history = HistoricalRecords()
+
+    @property
+    def slug_name(self) -> str:
+        product_type = self.product_type.lower()
+
+        return f"alicebob-{product_type}-{slugify(self.product_name)}"
 
     class Meta:
         db_table = 'products'
@@ -121,6 +160,15 @@ class Student(TimeStampedModel, models.Model):
 
     history = HistoricalRecords()
 
+    # Scoring metrics
+    purchase_score = models.FloatField(default=0, help_text="Score basado en compras realizadas.")
+    engagement_score = models.FloatField(default=0, help_text="Score general de actividad y participación.")
+    community_score = models.FloatField(default=0, help_text="Score basado en participación en comunidad.")
+    retention_score = models.FloatField(default=0, help_text="Score basado en retención y visitas repetidas.")
+    email_engagement_score = models.FloatField(default=0, help_text="Score basado en interacción con correos (apertura y clics).")
+
+    total_score = models.FloatField(default=0, help_text="Score total del estudiante.")
+
     class Meta:
         db_table = 'students'
         verbose_name = 'Student'
@@ -132,6 +180,46 @@ class Student(TimeStampedModel, models.Model):
 
     def __str__(self):
         return f"{self.full_name} ({self.email})"
+
+    def update_score(self, auto_save=True):
+        self.total_score = (
+                self.purchase_score * UserScore.PURCHASE_SCORE +
+                self.engagement_score * UserScore.ENGAGEMENT_SCORE +
+                self.community_score * UserScore.COMMUNITY_SCORE +
+                self.retention_score * UserScore.RETENTION_SCORE +
+                self.email_engagement_score * UserScore.EMAIL_ENGAGEMENT_SCORE
+        )
+
+        if auto_save:
+            self.save()
+
+    # -------------------------------------------------------------------------
+    # Scoring functions
+    # -------------------------------------------------------------------------
+    def update_purchase_score(self, product: Product, sell: "Sells", auto_save=True):
+        """
+        Actualiza el scoring del estudiante basado en la compra y el engagement del producto
+        (solo si el producto es de pago).
+        """
+        # Scoring base según el precio
+        base_score = PurchaseScore.FREE if sell.sell_price == 0 else PurchaseScore.PAID
+
+        # Aplica refuerzo de engagement solo para productos pagos
+        if sell.sell_price > 0:
+            engagement_multiplier = 1 + (product.engagement_score / 100)
+        else:
+            engagement_multiplier = 1  # No hay refuerzo para productos gratuitos
+
+        # Calcula el score final
+        final_score = base_score * engagement_multiplier
+        self.purchase_score += final_score
+
+        # Incrementa el engagement score solo si es un producto de pago
+        if sell.sell_price > 0:
+            self.engagement_score += product.engagement_score
+
+        if auto_save:
+            self.save()
 
 
 class Sells(TimeStampedModel, models.Model):

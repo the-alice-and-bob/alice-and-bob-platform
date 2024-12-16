@@ -75,7 +75,11 @@ INSTALLED_APPS = [
     'ezycourse',
     'news',
     'campaigns',
+    'authentication',
 ]
+
+if DEBUG:
+    INSTALLED_APPS.append('debug_toolbar')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -91,6 +95,12 @@ MIDDLEWARE = [
     'simple_history.middleware.HistoryRequestMiddleware'
 
 ]
+
+if DEBUG:
+    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
+    INTERNAL_IPS = [
+        '127.0.0.1',
+    ]
 
 ROOT_URLCONF = 'alicebob.urls'
 
@@ -121,19 +131,19 @@ DATABASES = {
 
 REDIS_URL = decouple.config('REDIS_URL', default="redis://localhost:6900/0")
 
-CACHES = {
-    'default': {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        'LOCATION': REDIS_URL,
-    },
-}
-
-CACHEOPS_REDIS = REDIS_URL
-CACHEOPS = {
-    'auth.*': {'ops': 'all', 'timeout': 60 * 60 * 24},
-    'academy.*': {'ops': 'all', 'timeout': 60 * 5},
-    "*.*": {'timeout': 60 * 60},
-}
+# CACHES = {
+#     'default': {
+#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#         'LOCATION': REDIS_URL,
+#     },
+# }
+#
+# CACHEOPS_REDIS = REDIS_URL
+# CACHEOPS = {
+#     'auth.*': {'ops': 'all', 'timeout': 60 * 60 * 24},
+#     'academy.*': {'ops': 'all', 'timeout': 60 * 5},
+#     "*.*": {'timeout': 60 * 60},
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -152,6 +162,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# -------------------------------------------------------------------------
+# User model
+# -------------------------------------------------------------------------
+AUTH_USER_MODEL = 'authentication.AliceBobUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -272,12 +287,14 @@ UNFOLD = {
         {
             "models": [
                 "academy.student",
+                "academy.StudentContactProxy"
+                "academy.StudentLeadProxy",
             ],
             "items": [
                 {
                     # Todos los estudiantes
                     "title": _("Estudiantes"),
-                    "link": reverse_lazy("admin:academy_student_changelist"),
+                    "link": reverse_lazy("admin:admin-student-all"),
                 },
                 {
                     # Leads solo
@@ -307,12 +324,17 @@ UNFOLD = {
                     },
                     {
                         "title": _("Cursos"),
-                        "link": reverse_lazy("admin:academy_product_changelist"),
+                        "link": lambda request: f"{reverse_lazy("admin:academy_product_changelist")}?product_type__exact=COURSE",
                         "icon": "school",
                     },
                     {
+                        "title": _("Comunidades"),
+                        "link": lambda request: f"{reverse_lazy("admin:academy_product_changelist")}?product_type__exact=COMMUNITY",
+                        "icon": "communities",
+                    },
+                    {
                         "title": _("Ventas"),
-                        "link": reverse_lazy("admin:academy_sells_changelist"),
+                        "link": lambda request: f"{reverse_lazy("admin:academy_sells_changelist")}?sell_price__gt=0",
                         "icon": "shopping_cart",
                     },
                     {
@@ -335,15 +357,31 @@ UNFOLD = {
                         "icon": "email",
                     },
                     {
-                        "title": _("News"),
-                        "link": reverse_lazy("admin:news_news_changelist"),
-                        "icon": "article",
-                    },
+                        # listas
+                        "title": _("Listas"),
+                        "link": reverse_lazy("admin:campaigns_maillist_changelist"),
+                        "icon": "list",
+                    }
+                ]
+            },
+
+            {
+                # Marketing
+                "title": _("Copywriting"),
+                "separator": True,
+                "collapsible": False,
+                "items": [
                     {
                         # listas
                         "title": _("Listas"),
                         "link": reverse_lazy("admin:campaigns_maillist_changelist"),
                         "icon": "list",
+                    },
+                    {
+                        # news
+                        "title": _("Tags"),
+                        "link": reverse_lazy("admin:news_newstag_changelist"),
+                        "icon": "label",
                     }
                 ]
             },
@@ -361,7 +399,7 @@ UNFOLD = {
                     },
                     {
                         "title": _("Usuarios"),
-                        "link": reverse_lazy("admin:auth_user_changelist"),
+                        "link": reverse_lazy("admin:authentication_alicebobuser_changelist"),
                         "icon": "people",
                     },
                     {
@@ -380,8 +418,11 @@ UNFOLD = {
 # Acumbamail
 # -------------------------------------------------------------------------
 ACUMBAMAIL_TOKEN = decouple.config('ACUMBAMAIL_TOKEN', default=None)
-DEFAULT_SENDER_COUNTRY = decouple.config('DEFAULT_SENDER_COUNTRY', default="Estonia")
-DEFAULT_SENDER_COMPANY = decouple.config('DEFAULT_SENDER_COMPANY', default="Zylentech OÜ")
-DEFAULT_SENDER_EMAIL = decouple.config('DEFAULT_SENDER_EMAIL', default="hello@alicebob.io")
-DEFAULT_SENDER_NAME = decouple.config('DEFAULT_SENDER_NAME', default="Alice")
-DEFAULT_LIST_ID = decouple.config('DEFAULT_LIST_ID', default=1035387, cast=int)
+
+ACUMBAMAIL_MAIL_LIST_ALL_USERS = "alicebob-all-users"
+ACUMBAMAIL_MAIL_LIST_CONTACTS = "alicebob-contacts"
+ACUMBAMAIL_MAIL_LIST_LEADS = "alicebob-leads"
+ACUMBAMAIL_SENDER_COUNTRY = "Estonia"
+ACUMBAMAIL_SENDER_COMPANY = "Zylentech OÜ"
+ACUMBAMAIL_SENDER_EMAIL = "hello@alicebob.io"
+ACUMBAMAIL_SENDER_NAME = "Alice"

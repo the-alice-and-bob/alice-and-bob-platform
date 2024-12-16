@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-celery -A celery_app worker -l info --concurrency=2 --pool=gevent
+celery -A celery_app worker -l info --concurrency=3 --pool=prefork -B

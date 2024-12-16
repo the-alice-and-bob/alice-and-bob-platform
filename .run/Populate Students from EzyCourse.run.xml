@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Populate Users" type="PythonConfigurationType" factoryName="Python">
+  <configuration default="false" name="Populate Students from EzyCourse" type="PythonConfigurationType" factoryName="Python" folderName="EzyCourse">
     <module name="alicebob-platform" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />

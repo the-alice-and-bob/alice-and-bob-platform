@@ -67,6 +67,12 @@
         {% endcomponent %}
     {% endcomponent %}
 
+    {% component "unfold/components/container.html" with class="mt-2 mb-8" %}
+        {% component "unfold/components/card.html" with title="Usuarios más importantes" %}
+            {% component "unfold/components/table.html" with table=table_engagement card_included=1 striped=1 %}{% endcomponent %}
+        {% endcomponent %}
+    {% endcomponent %}
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         // Datos para estudiantes
