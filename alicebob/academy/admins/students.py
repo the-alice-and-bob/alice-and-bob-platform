@@ -59,8 +59,8 @@ class StudentAdmin(ModelAdmin, TagListMixin, ImportExportModelAdmin):
 
         # Prefetch the sells and anotate the count of free and paid products per student.
         return query.prefetch_related('sells', 'tags').annotate(
-            products_free=models.Count('sells', filter=models.Q(sells__sell_price__lte=0)),
-            products_paid=models.Count('sells', filter=models.Q(sells__sell_price__gt=0))
+            products_free=models.Count('sells', filter=models.Q(sells__sell_price__lte=0), distinct=True),
+            products_paid=models.Count('sells', filter=models.Q(sells__sell_price__gt=0), distinct=True),
         )
 
     # -------------------------------------------------------------------------
