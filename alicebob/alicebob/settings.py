@@ -35,6 +35,7 @@ DEBUG = decouple.config('DEBUG', default=False, cast=bool)
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
     'https://awesome-backstage.alicebob.io'
+    'https://pro.alicebob.io'
 ]
 ALLOWED_HOSTS = [
     '*'
