@@ -1,9 +1,22 @@
+from enum import Enum
+
 from django.db import models
 
 from model_utils.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 
 from academy.models import Student
+
+
+class EmailEventType(Enum):
+    OPEN = "open"
+    CLICK = "click"
+    COMPLAINT = "complaint"
+    HARD_BOUNCE = "hard_bounce"
+    SOFT_BOUNCE = "soft_bounce"
+    DELIVERED = "delivered"
+    UNSUBSCRIBE = "unsubscribe"
+    SUBSCRIBE = "subscribe"
 
 
 class MailList(TimeStampedModel, models.Model):
@@ -30,17 +43,91 @@ class MailList(TimeStampedModel, models.Model):
         db_table = "mail_list"
 
 
-class DailyEmail(TimeStampedModel, models.Model):
+class EmailCampaigns(TimeStampedModel, models.Model):
     subject = models.CharField(max_length=255)
     content = models.TextField()
     scheduled_at = models.DateTimeField(null=True, blank=True)
 
+    acumbamail_id = models.IntegerField(unique=True, null=True, blank=True, db_index=True)
     mail_list = models.ForeignKey(MailList, on_delete=models.CASCADE, null=True, blank=True, related_name="daily_emails")
+
+    # -------------------------------------------------------------------------
+    # Stats
+    # -------------------------------------------------------------------------
+    total_sent = models.IntegerField(default=0, help_text="Total de emails enviados en esta campaña.")
+    total_opens = models.IntegerField(default=0, help_text="Total de emails abiertos en esta campaña.")
+    total_clicks = models.IntegerField(default=0, help_text="Total de clics registrados en esta campaña.")
+    total_bounces = models.IntegerField(default=0, help_text="Total de rebotes registrados en esta campaña.")
+    total_complaints = models.IntegerField(default=0, help_text="Total de quejas registradas en esta campaña.")
+    total_unsubscribes = models.IntegerField(default=0, help_text="Total de de-suscripciones registradas en esta campaña.")
 
     def __str__(self):
         return f"{self.subject} - {self.created}"
 
     class Meta:
-        verbose_name = "Daily Email"
-        verbose_name_plural = "Daily Emails"
-        db_table = "daily_emails"
+        verbose_name = "Email Campaign"
+        verbose_name_plural = "Email Campaigns"
+        db_table = "email_campaign"
+
+    def increment_stat(self, event_type: EmailEventType, auto_save=True):
+        """
+        Incrementa el conteo de la estadística respectiva basado en el tipo de evento.
+        """
+        if event_type == EmailEventType.OPEN:
+            self.total_opens += 1
+        elif event_type == EmailEventType.CLICK:
+            self.total_clicks += 1
+        elif event_type in [EmailEventType.HARD_BOUNCE, EmailEventType.SOFT_BOUNCE]:
+            self.total_bounces += 1
+        elif event_type == EmailEventType.COMPLAINT:
+            self.total_complaints += 1
+        elif event_type == EmailEventType.UNSUBSCRIBE:
+            self.total_unsubscribes += 1
+
+        if auto_save:
+            self.save()
+
+
+class EmailEvent(TimeStampedModel, models.Model):
+    """
+    Representa un evento relacionado con un email enviado.
+    """
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="email_events",
+        null=True,
+        blank=True,
+        help_text="Estudiante relacionado al evento (si corresponde)."
+    )
+    email = models.EmailField(max_length=800, help_text="Email asociado al evento.")
+    campaign = models.ForeignKey(
+        EmailCampaigns,
+        on_delete=models.CASCADE,
+        related_name="email_events",
+        null=True,
+        blank=True,
+        help_text="Email que disparó este evento."
+    )
+    event_type = models.CharField(
+        max_length=50,
+        choices=[
+            (tag.value, tag.name)
+            for tag in EmailEventType
+        ],
+        help_text="Tipo de evento registrado para este email."
+    )
+    timestamp = models.DateTimeField(help_text="Fecha y hora del evento.")
+    metadata = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Información adicional sobre el evento en formato JSON."
+    )
+
+    class Meta:
+        verbose_name = "Email Event"
+        verbose_name_plural = "Email Events"
+        db_table = "email_event"
+
+    def __str__(self):
+        return f"{self.email} - {self.get_event_type_display()} ({self.timestamp})"

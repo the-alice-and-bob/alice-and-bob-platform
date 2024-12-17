@@ -1,8 +1,8 @@
 import time
-from dataclasses import dataclass
 
-from datetime import datetime
 from typing import Iterable
+from datetime import datetime
+from dataclasses import dataclass
 
 from django.conf import settings
 
@@ -89,6 +89,7 @@ class AcumbamailAPI:
             "lists": [list_id],
             "content": html_content,
             "subject": subject,
+            "tracking_urls": 1,
             "complete_json": 1,
             "auth_token": self.auth_token,
             "response_type": "json",

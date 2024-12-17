@@ -31,7 +31,7 @@ def ensure_json(view_func):
 
         try:
             request.json = orjson.loads(request.body)
-        except orjson.JSONDecodeError:
+        except orjson.JSONDecodeError as e:
             return HttpResponseBadRequest("Invalid JSON")
 
         return view_func(request, *args, **kwargs)

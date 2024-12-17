@@ -19,7 +19,6 @@ from pathlib import Path
 from django.urls import reverse_lazy
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
-from pygments.lexer import default
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -130,8 +129,8 @@ DATABASES = {
     'default': dj_database_url.config(default=decouple.config('DATABASE_URL', default='sqlite:///db.sqlite3')),
 }
 
-REDIS_URL = decouple.config('REDIS_URL', default="redis://localhost:6900/0")
-
+# REDIS_URL = decouple.config('REDIS_URL', default="redis://localhost:6900/0")
+#
 # CACHES = {
 #     'default': {
 #         "BACKEND": "django.core.cache.backends.redis.RedisCache",
@@ -139,12 +138,8 @@ REDIS_URL = decouple.config('REDIS_URL', default="redis://localhost:6900/0")
 #     },
 # }
 #
-# CACHEOPS_REDIS = REDIS_URL
-# CACHEOPS = {
-#     'auth.*': {'ops': 'all', 'timeout': 60 * 60 * 24},
-#     'academy.*': {'ops': 'all', 'timeout': 60 * 5},
-#     "*.*": {'timeout': 60 * 60},
-# }
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+# SESSION_CACHE_ALIAS = 'default'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -354,7 +349,7 @@ UNFOLD = {
                 "items": [
                     {
                         "title": _("Campañas"),
-                        "link": reverse_lazy("admin:campaigns_dailyemail_changelist"),
+                        "link": reverse_lazy("admin:campaigns_emailcampaigns_changelist"),
                         "icon": "email",
                     },
                     {

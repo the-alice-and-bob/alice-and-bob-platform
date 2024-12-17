@@ -24,6 +24,7 @@ urlpatterns = [
     # Include news urls
     path('webhooks/news/', include('news.urls')),
     path('webhooks/ezycourse/', include('ezycourse.urls')),
+    path('webhooks/campaigns/', include('campaigns.urls')),
 ]
 
 

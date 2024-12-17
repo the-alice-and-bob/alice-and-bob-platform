@@ -221,6 +221,23 @@ class Student(TimeStampedModel, models.Model):
         if auto_save:
             self.save()
 
+    def update_email_engagement_score(student, event_type, auto_save=True):
+        """
+        Actualiza el score de 'email_engagement_score' del estudiante basado en eventos de email.
+        """
+        if event_type == EmailEventType.OPEN:
+            score_increment = 0.5  # Define cuánto incrementa por apertura
+        elif event_type == EmailEventType.CLICK:
+            score_increment = 1.0  # Define cuánto incrementa por clic
+        elif event_type in [EmailEventType.COMPLAINT, EmailEventType.HARD_BOUNCE]:
+            score_increment = -2.0  # Penalización por quejas o rebotes duros
+        else:
+            score_increment = 0  # Para otros eventos
+
+        student.email_engagement_score += score_increment
+
+        if auto_save:
+            student.update_score()  # Recalcula el total_score
 
 class Sells(TimeStampedModel, models.Model):
     subject = models.CharField(max_length=400, null=True)

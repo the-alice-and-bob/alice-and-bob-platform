@@ -15,19 +15,19 @@ from unfold.contrib.import_export.forms import ExportForm, ImportForm
 from awesome_admin.mixing import RRSSOnlyMixin
 
 from .sdk import update_list_from_acumbamail
-from .models import DailyEmail, MailList
+from .models import EmailCampaigns, MailList
 
 
 class DailyEmailAdminForm(ModelForm):
     class Meta:
-        model = DailyEmail
+        model = EmailCampaigns
         fields = ['subject', 'content', 'scheduled_at', 'mail_list']
         widgets = {
             'content': WysiwygWidget(attrs={'rows': 20, 'style': 'height: 500px; width: 100%;'}),
         }
 
 
-@admin.register(DailyEmail)
+@admin.register(EmailCampaigns)
 class DailyEmailAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     form = DailyEmailAdminForm
     import_form_class = ImportForm
