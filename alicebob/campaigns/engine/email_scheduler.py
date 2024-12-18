@@ -79,7 +79,6 @@ def send_daily_email():
     email = choice_daily_email()
 
     if not email:
-
         return
 
     with atomic():

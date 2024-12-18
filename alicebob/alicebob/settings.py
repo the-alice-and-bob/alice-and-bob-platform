@@ -34,7 +34,8 @@ DEBUG = decouple.config('DEBUG', default=False, cast=bool)
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
     'https://awesome-backstage.alicebob.io',
-    'https://pro.alicebob.io'
+    'https://pro.alicebob.io',
+    'https://dfdebb46cb32.ngrok.app'
 ]
 ALLOWED_HOSTS = [
     '*'
@@ -392,7 +393,7 @@ UNFOLD = {
                 "items": [
                     {
                         "title": _("Campañas"),
-                        "link": lambda request: f"{reverse_lazy('admin:campaigns_emailcampaigns_changelist')}?is_sent__exact=0",
+                        "link": reverse_lazy('admin:campaigns_emailcampaigns_changelist'),
                         "icon": "email",
                     },
                     {

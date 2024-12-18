@@ -91,7 +91,6 @@ class AcumbamailAPI:
             "subject": subject,
             "tracking_urls": 1,
             "complete_json": 1,
-            "auth_token": self.auth_token,
             "response_type": "json",
         }
 

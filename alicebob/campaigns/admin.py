@@ -17,6 +17,7 @@ from unfold.decorators import display
 
 from alicebob_sdk import celery_or_function
 from awesome_admin.mixing import RRSSOnlyMixin
+from .engine import create_send_campaign_email
 
 from .sdk import update_list_from_acumbamail
 from .models import EmailCampaigns, MailList
@@ -82,7 +83,7 @@ class EmailCampaignsAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
             obj.schedule_at = None
             obj.save()
 
-            # celery_or_function(create_send_campaign_email, 'task_create_send_campaign_email', obj.pk)
+            celery_or_function(create_send_campaign_email, 'task_create_send_campaign_email', obj.pk)
 
             # Redirect to the change view
             change_url = reverse('admin:campaigns_emailcampaigns_changelist')
@@ -90,6 +91,7 @@ class EmailCampaignsAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
 
         else:
             return super().response_add(request, obj, post_url_continue)
+
 
 @admin.register(MailList)
 class MailListAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):

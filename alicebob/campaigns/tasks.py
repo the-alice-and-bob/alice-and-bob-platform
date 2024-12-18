@@ -53,6 +53,7 @@ def daily_check_campaigns():
     """
     This task is executed daily to check the campaigns that have to be sent today. It should be executed at 10:00 AM.
     """
+    send_daily_email()
 
 
 @shared_task(name="example_demo_task", ignore_result=True)
