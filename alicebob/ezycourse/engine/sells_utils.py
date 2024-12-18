@@ -5,7 +5,7 @@ from django.db.transaction import atomic
 from awesome_ezycourse.sdk import Courses, Communities
 from academy.models import Product, Student, Sells, CourseProgress
 
-from ..sdk import ezycourse_instance
+from ..engine import ezycourse_instance
 
 
 def populate_sells() -> Iterable[Tuple[Student, Product]]:

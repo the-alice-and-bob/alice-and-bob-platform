@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from ezycourse.sdk import populate_sells
+from ezycourse.engine import populate_sells
 
 
 class Command(BaseCommand):

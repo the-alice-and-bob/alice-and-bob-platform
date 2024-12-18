@@ -9,13 +9,14 @@ This file defines the EzyCourses webhooks:
 - Quiz Completed Webhook: This is triggered when a user completes a quiz
 - Lesson Completed Webhook: This is triggered when a user completes a lesson
 """
-
+from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from ezycourse.sdk import *
+from ezycourse.engine import *
 from alicebob_sdk.decorators import *
+from celery_app import app as background_task
 
 
 @csrf_exempt
@@ -129,6 +130,52 @@ def quiz_completed(request):
     return JsonResponse({'message': 'Quiz Completed Webhook'})
 
 
+@csrf_exempt
+@require_http_methods(['POST'])
+@authorize
+@ensure_json
+def subscribe_to_email_list(request):
+    """
+    This webhook is triggered when a user subscribes to an email list.
+
+    Expected data format in request.json:
+
+    {
+        'params': {
+            'school_id': 794,
+            'form_name': 'subscribe-user-to-the-mail-list',
+            'response': {
+                'Nombre': 'Daniel',
+                'Email': 'garcia.garcia.daniel@gmail.com'
+            }
+        }
+    }
+    """
+
+    data = request.json
+
+    try:
+        name = data['params']['response']['Nombre']
+    except KeyError:
+        logger.error("Received invalid data from the form")
+        return
+
+    try:
+        email = data['params']['response']['Email']
+    except KeyError:
+        logger.error("Received invalid data from the form")
+        return
+
+    if settings.DEBUG:
+        subscribe_user_to_mail_list(name, email)
+
+    else:
+        background_task.send_task("task_subscribe_new_user_to_general_list", args=(name, email))
+
+    return JsonResponse({'message': 'Subscribe to Email List Webhook'})
+
+
 __all__ = (
-    'new_signup', 'new_product_enrollment', 'new_sale', 'course_completed', 'chapter_completed', 'quiz_completed', 'lesson_completed'
+    'new_signup', 'new_product_enrollment', 'new_sale', 'course_completed', 'chapter_completed', 'quiz_completed', 'lesson_completed',
+    'subscribe_to_email_list'
 )

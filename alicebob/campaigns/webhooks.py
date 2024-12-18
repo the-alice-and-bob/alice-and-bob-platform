@@ -23,7 +23,7 @@ def convert_timestamp(timestamp):
     return datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
 
 
-EVENTS = {
+ACUMBAMAIL_EVENTS = {
     'subscribes': EmailEventType.SUBSCRIBE,
     'unsubscribes': EmailEventType.UNSUBSCRIBE,
     'delivered': EmailEventType.DELIVERED,
@@ -33,6 +33,7 @@ EVENTS = {
     'opens': EmailEventType.OPEN,
     'clicks': EmailEventType
 }
+
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -94,7 +95,7 @@ def acumbamail_webhooks(request):
             continue
 
         try:
-            event_type = EVENTS[event_type]
+            event_type = ACUMBAMAIL_EVENTS[event_type]
         except KeyError:
             logger.warning(f"Unhandled event type: {event_type} for email: {email}")
             continue
@@ -106,14 +107,6 @@ def acumbamail_webhooks(request):
             background.send_task('task_process_acumbamail_webhook', args=(campaign_id, email, timestamp, event_type))
 
     return JsonResponse({'message': 'Webhook processed successfully'})
-
-
-
-__all__ = (
-    'acumbamail_webhooks',
-)
-
-
 
 __all__ = (
     'acumbamail_webhooks',

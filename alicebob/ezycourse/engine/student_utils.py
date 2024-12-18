@@ -3,7 +3,7 @@ from typing import Iterable
 from awesome_ezycourse.sdk import Courses, Users, UserEnrollmentStatus
 from academy.models import ProductTypes, Product, Student
 
-from ..sdk import ezycourse_instance
+from ..engine import ezycourse_instance
 
 
 def check_and_update_student_progress():

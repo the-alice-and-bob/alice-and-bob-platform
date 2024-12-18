@@ -10,4 +10,5 @@ urlpatterns = [
     path('chapter-completed/', chapter_completed, name='chapter-completed'),
     path('quiz-completed/', quiz_completed, name='quiz-completed'),
     path('lesson-completed/', lesson_completed, name='lesson-completed'),
+    path('subscribe-to-email-list/', subscribe_to_email_list, name='subscribe-to-email-list'),
 ]

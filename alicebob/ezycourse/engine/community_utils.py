@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from awesome_ezycourse.sdk import Communities, Community
+from awesome_ezycourse.sdk import Communities
 from academy.models import Product, ProductTypes
 
 from .auth import ezycourse_instance

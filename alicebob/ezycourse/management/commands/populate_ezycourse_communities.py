@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from ezycourse.sdk import populate_communities
+from ezycourse.engine import populate_communities
 
 
 class Command(BaseCommand):

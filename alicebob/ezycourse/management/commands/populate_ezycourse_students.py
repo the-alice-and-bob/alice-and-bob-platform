@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from ezycourse.sdk import populate_students
+from ezycourse.engine import populate_students
 
 
 class Command(BaseCommand):
