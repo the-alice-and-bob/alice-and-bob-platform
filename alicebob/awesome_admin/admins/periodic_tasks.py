@@ -22,38 +22,39 @@ admin.site.unregister(SolarSchedule)
 admin.site.unregister(ClockedSchedule)
 
 
-# class UnfoldTaskSelectWidget(UnfoldAdminSelectWidget, TaskSelectWidget):
-#     pass
-#
-#
-# class UnfoldPeriodicTaskForm(PeriodicTaskForm):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.fields["task"].widget = UnfoldAdminTextInputWidget()
-#         self.fields["regtask"].widget = UnfoldTaskSelectWidget()
-#
-#
-# @admin.register(PeriodicTask)
-# class PeriodicTaskAdmin(BasePeriodicTaskAdmin, ModelAdmin):
-#     form = UnfoldPeriodicTaskForm
-#
-# #
-# # @admin.register(IntervalSchedule)
-# # class IntervalScheduleAdmin(ModelAdmin):
-# #     pass
-#
-#
-# @admin.register(CrontabSchedule)
-# class CrontabScheduleAdmin(BaseCrontabScheduleAdmin, ModelAdmin):
-#     pass
+class UnfoldTaskSelectWidget(UnfoldAdminSelectWidget, TaskSelectWidget):
+    pass
 
-#
-# @admin.register(SolarSchedule)
-# class SolarScheduleAdmin(ModelAdmin):
-#     pass
-#
-# @admin.register(ClockedSchedule)
-# class ClockedScheduleAdmin(BaseClockedScheduleAdmin, ModelAdmin):
-#     pass
+
+class UnfoldPeriodicTaskForm(PeriodicTaskForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["task"].widget = UnfoldAdminTextInputWidget()
+        self.fields["regtask"].widget = UnfoldTaskSelectWidget()
+
+
+@admin.register(PeriodicTask)
+class PeriodicTaskAdmin(BasePeriodicTaskAdmin, ModelAdmin):
+    form = UnfoldPeriodicTaskForm
+
+
+@admin.register(IntervalSchedule)
+class IntervalScheduleAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(CrontabSchedule)
+class CrontabScheduleAdmin(BaseCrontabScheduleAdmin, ModelAdmin):
+    pass
+
+
+@admin.register(SolarSchedule)
+class SolarScheduleAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(ClockedSchedule)
+class ClockedScheduleAdmin(BaseClockedScheduleAdmin, ModelAdmin):
+    pass
 
 

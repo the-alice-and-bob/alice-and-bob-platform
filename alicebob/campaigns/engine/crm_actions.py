@@ -127,23 +127,4 @@ def create_product(product_id: int):
     )
 
 
-def create_send_campaign_email(daily_email_id: int):
-    try:
-        instance = EmailCampaigns.objects.get(pk=daily_email_id)
-    except EmailCampaigns.DoesNotExist:
-        raise Exception("Daily Email not found")
-
-    acu = AcumbamailAPI()
-    ret = acu.send_many(
-        campaign_name=f"[{datetime.today().strftime('%Y-%m-%d')}] {instance.subject}",
-        subject=instance.subject,
-        body=instance.content,
-        scheduled_date=instance.scheduled_at,
-        list_id=instance.mail_list.acumbamail_id,
-    )
-
-    instance.campaign_id = ret
-    instance.save()
-
-
-__all__ = ('create_purchase_order', 'create_student', 'create_product', 'create_send_campaign_email')
+__all__ = ('create_purchase_order', 'create_student', 'create_product')

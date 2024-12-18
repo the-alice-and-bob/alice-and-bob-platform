@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 
 from campaigns.sdk import update_list_from_acumbamail
 
+
 class Command(BaseCommand):
     help = 'update acumbamail lists'
 

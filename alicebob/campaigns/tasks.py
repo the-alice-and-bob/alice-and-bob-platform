@@ -7,9 +7,10 @@ from .engine import *
 
 
 # -------------------------------------------------------------------------
-# Tasks for the Acumbamail list management
+# Tasks for the Acumbamail when a new student is created or a new
+# product is created
 # -------------------------------------------------------------------------
-@shared_task(name="task_create_purchase_order", rate_limit="30/m")
+@shared_task(name="task_create_purchase_order", rate_limit="30/m", ignore_result=True)
 def task_create_purchase_order(sell_id: int):
     """
     This task creates a purchase order in Acumbamail
@@ -17,17 +18,17 @@ def task_create_purchase_order(sell_id: int):
     create_purchase_order(sell_id)
 
 
-@shared_task(name="task_create_student", rate_limit="30/m")
+@shared_task(name="task_create_student", rate_limit="30/m", ignore_result=True)
 def task_create_student(student_id: int):
     create_student(student_id)
 
 
-@shared_task(name="task_create_product", rate_limit="30/m")
+@shared_task(name="task_create_product", rate_limit="30/m", ignore_result=True)
 def task_create_product(product_id: int):
     create_product(product_id)
 
 
-@shared_task(name="task_create_send_campaign_email", rate_limit="60/m")
+@shared_task(name="task_create_send_campaign_email", rate_limit="60/m", ignore_result=True)
 def task_create_send_campaign_email(daily_email_id: int):
     create_send_campaign_email(daily_email_id)
 
@@ -39,6 +40,24 @@ def task_create_send_campaign_email(daily_email_id: int):
 # -------------------------------------------------------------------------
 # Tasks for webhooks
 # -------------------------------------------------------------------------
-@shared_task(name="task_process_acumbamail_webhook")
+@shared_task(name="task_process_acumbamail_webhook", ignore_result=True)
 def task_process_acumbamail_webhook(list_id, email, timestamp, event_type):
     handle_action(list_id, email, timestamp, event_type)
+
+
+# -------------------------------------------------------------------------
+# Scheduled tasks
+# -------------------------------------------------------------------------
+@shared_task(name="daily_check_campaigns", ignore_result=True)
+def daily_check_campaigns():
+    """
+    This task is executed daily to check the campaigns that have to be sent today. It should be executed at 10:00 AM.
+    """
+
+
+@shared_task(name="example_demo_task", ignore_result=True)
+def demo_tasks():
+    """
+    This function is a demo of how to create a task that is executed every
+    """
+    print("Hello world")

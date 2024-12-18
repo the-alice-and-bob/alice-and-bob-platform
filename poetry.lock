@@ -655,13 +655,13 @@ Django = ">=3.2,<6.0"
 
 [[package]]
 name = "django-unfold"
-version = "0.41.0"
+version = "0.43.0"
 description = "Modern Django admin theme for seamless interface development"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "django_unfold-0.41.0-py3-none-any.whl", hash = "sha256:e8b37484efa86a86be10c9c843252ceb01e5d5609114cfc2ed2d39bd9dfbb575"},
-    {file = "django_unfold-0.41.0.tar.gz", hash = "sha256:34f005bd5d95c25a62129d61099ebac8974e1e3b1910e6344eb869259f01b94c"},
+    {file = "django_unfold-0.43.0-py3-none-any.whl", hash = "sha256:e60252393fadd76b6a2c90437512bac92c9a1c5d162d8df3bc13ebd401226181"},
+    {file = "django_unfold-0.43.0.tar.gz", hash = "sha256:c1f2e4314b87db2f4d845f6507667404df8e33ea0e8f336d604c5863c9358031"},
 ]
 
 [package.dependencies]
@@ -1262,17 +1262,17 @@ files = [
 
 [[package]]
 name = "notion-client"
-version = "2.2.1"
+version = "2.3.0"
 description = "Python client for the official Notion API"
 optional = false
-python-versions = ">=3.7, <4"
+python-versions = "<4,>=3.7"
 files = [
-    {file = "notion-client-2.2.1.tar.gz", hash = "sha256:3827e381ccb5a21aeb606686787edfb6c7a10681cb3507c4d606a1918e791061"},
-    {file = "notion_client-2.2.1-py2.py3-none-any.whl", hash = "sha256:4ecf9ec527a124462f7bd407d9c9ead9853a9b2c8f00e56f3fa8fb15106ad871"},
+    {file = "notion-client-2.3.0.tar.gz", hash = "sha256:c4b4ae04ce182eb89611d41544dac710049683a4d7309c4b22fde52f81cbcb39"},
+    {file = "notion_client-2.3.0-py2.py3-none-any.whl", hash = "sha256:6696bb057b7872477077d6a3bb4299c4a7924450e7d168174e79cbf8e01d9576"},
 ]
 
 [package.dependencies]
-httpx = ">=0.15.0"
+httpx = ">=0.23.0"
 
 [[package]]
 name = "orjson"
@@ -2062,4 +2062,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "5ff89be96fcba77e88173a71235c85be90d6bc919bf551a8f5ec5e5ace468a3f"
+content-hash = "997efd34beb2f8f004fc43d657faedef11993a9b9875e5981245493c8ed49216"

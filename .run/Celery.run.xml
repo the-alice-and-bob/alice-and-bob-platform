@@ -25,7 +25,7 @@
       </ENTRIES>
     </EXTENSION>
     <option name="SCRIPT_NAME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/alicebob-Svwm8ubU-py3.12/bin/celery" />
-    <option name="PARAMETERS" value="-A celery_app worker -l info -P solo -c 1" />
+    <option name="PARAMETERS" value="-A celery_app worker -l info -c 2 --pool threads -B --scheduler django_celery_beat.schedulers:DatabaseScheduler" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />

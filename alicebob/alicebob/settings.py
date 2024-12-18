@@ -282,9 +282,7 @@ UNFOLD = {
     "TABS": [
         {
             "models": [
-                "academy.student",
-                "academy.StudentContactProxy"
-                "academy.StudentLeadProxy",
+                "academy.student"
             ],
             "items": [
                 {
@@ -301,6 +299,51 @@ UNFOLD = {
                     # de pago
                     "title": _("Estudiantes que han comprado"),
                     "link": reverse_lazy("admin:admin-student-paid"),
+                }
+            ]
+        },
+        {
+            "models": [
+                "campaigns.emailcampaigns"
+            ],
+            "items": [
+                {
+                    # Todos los emails
+                    "title": _("Todas las campañas"),
+                    "link": reverse_lazy("admin:campaigns_emailcampaigns_changelist"),
+                },
+                {
+                    # en cola
+                    "title": _("Campañas en cola"),
+                    "link": lambda request: f"{reverse_lazy('admin:campaigns_emailcampaigns_changelist')}?is_sent__exact=False",
+                },
+                {
+                    # Emails enviados
+                    "title": _("Campañas enviadas"),
+                    "link": lambda request: f"{reverse_lazy('admin:campaigns_emailcampaigns_changelist')}?is_sent__exact=True",
+                }
+            ]
+        },
+
+        {
+            "models": [
+                # schedules: intervals, and cron
+                "django_celery_beat.intervalschedule",
+                "django_celery_beat.crontabschedule",
+                "django_celery_beat.periodictask"
+            ],
+            "items": [
+                {
+                    "title": _("Periodic Tasks"),
+                    "link": reverse_lazy("admin:django_celery_beat_periodictask_changelist"),
+                },
+                {
+                    "title": _("Intervals"),
+                    "link": reverse_lazy("admin:django_celery_beat_intervalschedule_changelist"),
+                },
+                {
+                    "title": _("Cron"),
+                    "link": reverse_lazy("admin:django_celery_beat_crontabschedule_changelist"),
                 }
             ]
         }
@@ -349,7 +392,7 @@ UNFOLD = {
                 "items": [
                     {
                         "title": _("Campañas"),
-                        "link": reverse_lazy("admin:campaigns_emailcampaigns_changelist"),
+                        "link": lambda request: f"{reverse_lazy('admin:campaigns_emailcampaigns_changelist')}?is_sent__exact=0",
                         "icon": "email",
                     },
                     {
@@ -402,6 +445,12 @@ UNFOLD = {
                         "title": _("Grupos"),
                         "link": reverse_lazy("admin:auth_group_changelist"),
                         "icon": "communities",
+                    },
+                    # Add the periodic tasks
+                    {
+                        "title": _("Tareas programadas"),
+                        "link": reverse_lazy("admin:django_celery_beat_periodictask_changelist"),
+                        "icon": "schedule",
                     },
                 ]
             }

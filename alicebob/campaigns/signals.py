@@ -10,13 +10,13 @@ from celery_app import app as background_task
 from .tasks import create_purchase_order, create_product, create_send_campaign_email, create_student
 
 
-@receiver(post_save, sender=EmailCampaigns)
-def signal_send_email(sender, instance, created, **kwargs):
-    if created:
-        if settings.DEBUG:
-            create_send_campaign_email(instance.id)
-        else:
-            background_task.send_task("task_create_send_campaign_email", args=(instance.id,))
+# @receiver(post_save, sender=EmailCampaigns)
+# def signal_send_email(sender, instance, created, **kwargs):
+#     if created:
+#         if settings.DEBUG:
+#             create_send_campaign_email(instance.id)
+#         else:
+#             background_task.send_task("task_create_send_campaign_email", args=(instance.id,))
 
 
 @receiver(post_save, sender=Product)

@@ -46,7 +46,13 @@ class MailList(TimeStampedModel, models.Model):
 class EmailCampaigns(TimeStampedModel, models.Model):
     subject = models.CharField(max_length=255)
     content = models.TextField()
-    scheduled_at = models.DateTimeField(null=True, blank=True)
+
+    is_sent = models.BooleanField(default=False, help_text="Indica si el email ha sido enviado.", db_index=True)
+
+    send_date = models.DateTimeField(null=True, blank=True, help_text="Fecha en la que se ha enviado el email.")
+    scheduled_at = models.DateTimeField(
+        null=True, blank=True, help_text="Fecha y hora en la que se programó el envío del email.", db_index=True
+    )
 
     acumbamail_id = models.IntegerField(unique=True, null=True, blank=True, db_index=True)
     mail_list = models.ForeignKey(MailList, on_delete=models.CASCADE, null=True, blank=True, related_name="daily_emails")

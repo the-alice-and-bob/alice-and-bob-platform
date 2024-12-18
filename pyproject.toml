@@ -25,7 +25,7 @@ rich = "^13.9.4"
 psycopg = {extras = ["binary"], version = "^3.2.3"}
 dj-database-url = "^2.3.0"
 uuid7 = "^0.1.0"
-django-unfold = "^0.41.0"
+django-unfold = "^0.43.0"
 django-import-export = "^4.3.1"
 django-guardian = "^2.4.0"
 django-simple-history = "^3.7.0"
