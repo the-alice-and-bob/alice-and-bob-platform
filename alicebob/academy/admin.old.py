@@ -13,7 +13,7 @@ from unfold.contrib.import_export.forms import ExportForm, ImportForm
 from unfold.decorators import display
 
 from alicebob_sdk import TagListMixin
-from campaigns.sdk import AcumbamailAPI, update_list_from_acumbamail
+from campaigns.sdk import AcumbamailAPI, sync_list_from_acumbamail
 
 from .models import Product, Sells, Student, CourseProgress, Tag
 
@@ -55,7 +55,7 @@ class ProductAdmin(ModelAdmin, TagListMixin, ImportExportModelAdmin):
             )
 
         # Actualizar las listas desde Acumbamail
-        update_list_from_acumbamail()
+        sync_list_from_acumbamail()
 
         # Código para crear listas en Acumbamail
         return redirect(reverse_lazy('admin:academy_product_changelist'))

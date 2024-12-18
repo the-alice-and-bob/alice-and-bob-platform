@@ -3,7 +3,7 @@ from campaigns.models import MailList
 from .acumbamail import AcumbamailAPI
 
 
-def update_list_from_acumbamail():
+def sync_list_from_acumbamail():
     ac = AcumbamailAPI()
 
     existing_mail_ids = set()
@@ -38,4 +38,4 @@ def update_list_from_acumbamail():
     MailList.objects.exclude(acumbamail_id__in=existing_mail_ids).update(active=False)
 
 
-__all__ = ('update_list_from_acumbamail',)
+__all__ = ('sync_list_from_acumbamail',)

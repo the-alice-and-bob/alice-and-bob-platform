@@ -19,7 +19,7 @@ from alicebob_sdk import celery_or_function
 from awesome_admin.mixing import RRSSOnlyMixin
 from .engine import create_send_campaign_email
 
-from .sdk import update_list_from_acumbamail
+from .sdk import sync_list_from_acumbamail
 from .models import EmailCampaigns, MailList
 
 
@@ -144,7 +144,7 @@ class MailListAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
 
     def reload_mail_list(self, request):
         # Reload the mail list
-        update_list_from_acumbamail()
+        sync_list_from_acumbamail()
 
         self.message_user(request, "Listas de correo actualizadas correctamente")
 

@@ -4,6 +4,7 @@ This file contains the tasks that are triggered by the EzyCourses webhooks:
 from celery import shared_task
 
 from .engine import *
+from .sdk import sync_list_from_acumbamail
 
 
 # -------------------------------------------------------------------------
@@ -48,12 +49,20 @@ def task_process_acumbamail_webhook(list_id, email, timestamp, event_type):
 # -------------------------------------------------------------------------
 # Scheduled tasks
 # -------------------------------------------------------------------------
-@shared_task(name="daily_check_campaigns", ignore_result=True)
-def daily_check_campaigns():
+@shared_task(name="task_daily_check_campaigns", ignore_result=True)
+def task_daily_check_campaigns():
     """
     This task is executed daily to check the campaigns that have to be sent today. It should be executed at 10:00 AM.
     """
     send_daily_email()
+
+
+@shared_task(name="task_sync_list_from_acumbamail", ignore_result=True)
+def task_sync_list_from_acumbamail():
+    """
+    This task is executed daily to check the campaigns that have to be sent today. It should be executed at 10:00 AM.
+    """
+    sync_list_from_acumbamail()
 
 
 @shared_task(name="example_demo_task", ignore_result=True)
