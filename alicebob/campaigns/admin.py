@@ -1,12 +1,13 @@
-from datetime import datetime
 from typing import List
 
 from django.contrib import admin
 from django.forms import ModelForm
 from django.shortcuts import redirect
 from django.urls import URLPattern, path, reverse
+from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import gettext as _
+
 
 from import_export.admin import ImportExportModelAdmin
 
@@ -79,7 +80,7 @@ class EmailCampaignsAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
 
             # Send the email
             obj.is_sent = True
-            obj.send_date = datetime.now()
+            obj.send_date = timezone.now()
             obj.schedule_at = None
             obj.save()
 

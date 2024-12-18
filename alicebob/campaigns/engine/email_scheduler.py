@@ -1,6 +1,6 @@
 import logging
 
-from datetime import datetime
+from django.utils import timezone
 
 from django.db.transaction import atomic
 
@@ -24,7 +24,7 @@ def choice_daily_email() -> EmailCampaigns:
     # Check if there are emails planned to be sent today, if so, return the first email planned to be sent today
     if email_for_today := EmailCampaigns.objects.filter(
             is_sent=False,
-            scheduled_at=datetime.now().date(),
+            scheduled_at=timezone.now().date(),
     ).first():
         return email_for_today
 
@@ -61,7 +61,7 @@ def create_send_campaign_email(email_campaign_id: int | EmailCampaigns):
 
     acu = AcumbamailAPI()
     ret = acu.send_many(
-        campaign_name=f"[{datetime.today().strftime('%Y-%m-%d')}] {instance.subject}",
+        campaign_name=f"[{timezone.now().today().strftime('%Y-%m-%d')}] {instance.subject}",
         subject=instance.subject,
         body=instance.content,
         scheduled_date=instance.scheduled_at,
@@ -83,7 +83,7 @@ def send_daily_email():
 
     with atomic():
         email.is_sent = True
-        email.send_date = datetime.now()
+        email.send_date = timezone.now()
 
         create_send_campaign_email(email)
 
