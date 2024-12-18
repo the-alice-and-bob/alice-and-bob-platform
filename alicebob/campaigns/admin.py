@@ -28,7 +28,7 @@ class EmailCampaignsForm(ModelForm):
         model = EmailCampaigns
         fields = ['subject', 'content', 'scheduled_at', 'mail_list']
         widgets = {
-            'content': WysiwygWidget(attrs={'rows': 20, 'style': 'height: 500px; width: 100%;'}),
+            'content': WysiwygWidget(attrs={'rows': 20, 'style': 'min-height: 500px; width: 100%;'}),
         }
         required_fields = ['subject', 'content', 'mail_list']
 
