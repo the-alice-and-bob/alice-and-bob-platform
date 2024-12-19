@@ -28,7 +28,7 @@ def subscribe_user_to_mail_list(name: str, email: str):
             lead = Lead.objects.get(email=email)
         except Lead.DoesNotExist:
             logger.info(f"User {name} with email {email} does not exist in the database. Creating a lead")
-            lead = Lead.objects.create(email=email, name=name)
+            lead = Lead.objects.create(email=email)
 
     with atomic():
 

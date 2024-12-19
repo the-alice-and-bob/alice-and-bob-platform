@@ -140,7 +140,7 @@ class ChapterCompleted:
     chapter_name: str
 
     @classmethod
-    def from_json(cls, data: dict) -> 'ChapterCompeleted':
+    def from_json(cls, data: dict) -> 'ChapterCompleted':
         return cls(
             identifier=data.get('id'),
             first_name=data.get('first_name'),

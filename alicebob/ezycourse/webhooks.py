@@ -9,6 +9,8 @@ This file defines the EzyCourses webhooks:
 - Quiz Completed Webhook: This is triggered when a user completes a quiz
 - Lesson Completed Webhook: This is triggered when a user completes a lesson
 """
+import logging
+
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -18,6 +20,11 @@ from ezycourse.engine import *
 from alicebob_sdk.decorators import *
 from celery_app import app as background_task
 
+logger = logging.getLogger("db")
+
+def error_response(message: str, status: int = 400) -> JsonResponse:
+    """Helper function to return error responses"""
+    return JsonResponse({'error': message}, status=status)
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -33,10 +40,12 @@ def new_signup(request):
     name	Name of the student. Value should be 3 to 50 characters long.
     email	Email of the student. Value should be 50 characters long.
     """
-    ezycourse_new_signup(request.json)
-
-    return JsonResponse({'message': 'New Signup Webhook'})
-
+    try:
+        ezycourse_new_signup(request.json)
+        return JsonResponse({'message': 'New Signup Webhook'})
+    except Exception as e:
+        logger.error(f"Error processing new signup: {e}")
+        return error_response("Failed to process new signup")
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -46,10 +55,12 @@ def new_product_enrollment(request):
     """
     This webhook is triggered when a user enrolls in a FREE product.
     """
-    ezycourse_new_product_enrollment(request.json)
-
-    return JsonResponse({'message': 'New Product Enrollment Webhook'})
-
+    try:
+        ezycourse_new_product_enrollment(request.json)
+        return JsonResponse({'message': 'New Product Enrollment Webhook'})
+    except Exception as e:
+        logger.error(f"Error processing new product enrollment: {e}")
+        return error_response("Failed to process new product enrollment")
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -74,10 +85,12 @@ def new_sale(request):
     gateway	Payment gateway of the sold product.
 
     """
-    ezycourse_new_sale(request.json)
-
-    return JsonResponse({'message': 'New Sale Webhook'})
-
+    try:
+        ezycourse_new_sale(request.json)
+        return JsonResponse({'message': 'New Sale Webhook'})
+    except Exception as e:
+        logger.error(f"Error processing new sale: {e}")
+        return error_response("Failed to process new sale")
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -87,11 +100,12 @@ def course_completed(request):
     """
     This webhook is triggered when a user completes a course.
     """
-
-    ezycourse_course_completed(request.json)
-
-    return JsonResponse({'message': 'Course Completed Webhook'})
-
+    try:
+        ezycourse_course_completed(request.json)
+        return JsonResponse({'message': 'Course Completed Webhook'})
+    except Exception as e:
+        logger.error(f"Error processing course completion: {e}")
+        return error_response("Failed to process course completion")
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -101,10 +115,12 @@ def chapter_completed(request):
     """
     This webhook is triggered when a user completes a chapter.
     """
-    ezycourse_chapter_completed(request.json)
-
-    return JsonResponse({'message': 'Chapter Completed Webhook'})
-
+    try:
+        ezycourse_chapter_completed(request.json)
+        return JsonResponse({'message': 'Chapter Completed Webhook'})
+    except Exception as e:
+        logger.error(f"Error processing chapter completion: {e}")
+        return error_response("Failed to process chapter completion")
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -114,10 +130,12 @@ def lesson_completed(request):
     """
     This webhook is triggered when a user completes a lesson.
     """
-    ezycourse_lesson_completed(request.json)
-
-    return JsonResponse({'message': 'Lesson Completed Webhook'})
-
+    try:
+        ezycourse_lesson_completed(request.json)
+        return JsonResponse({'message': 'Lesson Completed Webhook'})
+    except Exception as e:
+        logger.error(f"Error processing lesson completion: {e}")
+        return error_response("Failed to process lesson completion")
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -127,8 +145,12 @@ def quiz_completed(request):
     """
     This webhook is triggered when a user completes a quiz.
     """
-    return JsonResponse({'message': 'Quiz Completed Webhook'})
-
+    try:
+        ezycourse_quiz_completed(request.json)
+        return JsonResponse({'message': 'Quiz Completed Webhook'})
+    except Exception as e:
+        logger.error(f"Error processing quiz completion: {e}")
+        return error_response("Failed to process quiz completion")
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -151,29 +173,24 @@ def subscribe_to_email_list(request):
         }
     }
     """
-
     data = request.json
 
     try:
         name = data['params']['response']['Nombre']
-    except KeyError:
-        logger.error("Received invalid data from the form")
-        return
+        email = data['params']['response']['Email']
+    except KeyError as e:
+        logger.error(f"Received invalid data from the form: missing field {e}")
+        return error_response("Invalid form data: missing required fields")
 
     try:
-        email = data['params']['response']['Email']
-    except KeyError:
-        logger.error("Received invalid data from the form")
-        return
-
-    if settings.DEBUG:
-        subscribe_user_to_mail_list(name, email)
-
-    else:
-        background_task.send_task("task_subscribe_new_user_to_general_list", args=(name, email))
-
-    return JsonResponse({'message': 'Subscribe to Email List Webhook'})
-
+        if settings.DEBUG:
+            subscribe_user_to_mail_list(name, email)
+        else:
+            background_task.send_task("task_subscribe_new_user_to_general_list", args=(name, email))
+        return JsonResponse({'message': 'Subscribe to Email List Webhook'})
+    except Exception as e:
+        logger.error(f"Failed to subscribe user to email list: {e}")
+        return error_response("Failed to subscribe user to email list")
 
 __all__ = (
     'new_signup', 'new_product_enrollment', 'new_sale', 'course_completed', 'chapter_completed', 'quiz_completed', 'lesson_completed',

@@ -16,12 +16,13 @@ from unfold.contrib.forms.widgets import WysiwygWidget
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
 from unfold.decorators import display
 
+from celery_app import app as background_tasks
 from alicebob_sdk import celery_or_function
 from awesome_admin.mixing import RRSSOnlyMixin
-from .engine import create_send_campaign_email
 
 from .sdk import sync_list_from_acumbamail
 from .models import EmailCampaigns, MailList
+from .engine import create_send_campaign_email
 
 
 class EmailCampaignsForm(ModelForm):
@@ -40,7 +41,7 @@ class EmailCampaignsAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     import_form_class = ImportForm
     export_form_class = ExportForm
     search_fields = ['subject', 'content']
-    list_display = ['campaign_name', 'subject', 'mail_list', "is_sent"]
+    list_display = ['campaign_name', 'subject', 'mail_list', "is_sent", "is_draft", "scheduled_at" ]
     fieldsets = (
         (
             _("Campaign Info"), {
@@ -113,6 +114,30 @@ class MailListAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
 
     active_bullet.short_description = 'Active'
     active_bullet.boolean = True
+
+    def get_urls(self) -> List[URLPattern]:
+        urls = super().get_urls()
+
+        # add custom urls here
+        custom_urls = [
+            path('reload-mail-list/', self.admin_site.admin_view(self.reload_mail_list), name='reload-mail-list'),
+        ]
+
+        return custom_urls + urls
+
+    def reload_mail_list(self, request):
+        background_tasks.send_task('task_sync_list_from_acumbamail')
+
+        self.message_user(request, _("La lista de correo se está actualizando en segundo plano"))
+
+        # redirección a la raiz del modelo en el admin
+        app, model = self.get_model_info()
+        return redirect(reverse(f'admin:{app}_{model}_changelist'))
+
+    def acumbamail_id(self, obj):
+        return format_html(f'<a href="https://acumbamail.com/app/list/{obj.acumbamail_id}/" target="_blank">{obj.acumbamail_id}</a>')
+
+
     #
     #     def action_button(self, obj):
     #         # Format in tailwindcss
@@ -136,26 +161,3 @@ class MailListAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     # """)
     #
     #     action_button.short_description = 'Action'
-
-    def get_urls(self) -> List[URLPattern]:
-        urls = super().get_urls()
-
-        # add custom urls here
-        custom_urls = [
-            path('reload-mail-list/', self.admin_site.admin_view(self.reload_mail_list), name='reload-mail-list'),
-        ]
-
-        return custom_urls + urls
-
-    def reload_mail_list(self, request):
-        # Reload the mail list
-        sync_list_from_acumbamail()
-
-        self.message_user(request, "Listas de correo actualizadas correctamente")
-
-        # redirección a la raiz del modelo en el admin
-        app, model = self.get_model_info()
-        return redirect(reverse(f'admin:{app}_{model}_changelist'))
-
-    def acumbamail_id(self, obj):
-        return format_html(f'<a href="https://acumbamail.com/app/list/{obj.acumbamail_id}/" target="_blank">{obj.acumbamail_id}</a>')
