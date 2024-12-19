@@ -19,7 +19,7 @@ def handle_action(campaign_id: int, email: str, timestamp, event_type: EmailEven
     try:
         campaign = EmailCampaigns.objects.prefetch_related("mail_list").get(acumbamail_id=campaign_id)
     except EmailCampaigns.DoesNotExist:
-        logger.warning(f"Email campaign not found when processing event: {event_type} for email: {email}")
+        logger.warning(f"Email campaign '{campaign_id}' not found when processing event: {event_type} for email: {email}")
         return
 
     # Busca el estudiante relacionado con el email (si existe)
