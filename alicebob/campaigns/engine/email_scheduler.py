@@ -35,7 +35,7 @@ def choice_daily_email() -> EmailCampaigns:
     ).order_by('created').first()
 
 
-def create_send_campaign_email(email_campaign_id: int | EmailCampaigns):
+def create_send_campaign_email(email_campaign_id: int | EmailCampaigns, auto_save: bool = True):
     """
     Creates and sends an email campaign using the specified campaign ID or an EmailCampaigns instance.
 
@@ -73,7 +73,9 @@ def create_send_campaign_email(email_campaign_id: int | EmailCampaigns):
     )
 
     instance.campaign_id = ret
-    instance.save()
+
+    if auto_save:
+        instance.save()
 
 
 def send_daily_email():
@@ -89,7 +91,9 @@ def send_daily_email():
         email.is_sent = True
         email.send_date = timezone.now()
 
-        create_send_campaign_email(email)
+        create_send_campaign_email(email, auto_save=False)
+
+        email.save()
 
 
 __all__ = ('create_send_campaign_email', 'send_daily_email')
