@@ -212,6 +212,10 @@ if not DEBUG:
 CELERY_BROKER_URL = decouple.config('CELERY_BROKER_URL', default='amqp://guest:guest@localhost')
 CELERY_RESULT_BACKEND = decouple.config('CELERY_BACKEND_URL', default=None)
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_TASK_SERIALIZER = 'pickle'
+CELERY_RESULT_SERIALIZER = 'pickle'
+CELERY_ACCEPT_CONTENT = ['json', 'pickle']
+
 
 if CELERY_BROKER_URL.startswith('rediss') or CELERY_BROKER_URL.startswith('amqps'):
     CELERY_BROKER_USE_SSL = {

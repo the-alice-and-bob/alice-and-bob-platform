@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.utils.timezone import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from prompt_toolkit.contrib.regular_languages.compiler import EscapeFuncDict
 
 from alicebob_sdk.decorators import *
 from celery_app import app as background
@@ -102,13 +103,16 @@ def acumbamail_webhooks(request):
         return JsonResponse({'error': 'No events found in the payload.'}, status=400)
 
     # If the first-event sub-dict is a number, it's a list of events
-    event_keys = list(events.keys())
+    event_keys = []
+    for key in events.keys():
+        event_keys.append(key)
+        break
 
     if event_keys[0].isdigit():
         events = events
 
     else:
-        events = {str(i+1): events[i] for i in range(len(events))}
+        events = {"1": events}
 
     for event in events.values():
         event_type = event.get('event')
@@ -116,7 +120,7 @@ def acumbamail_webhooks(request):
         timestamp = event.get('timestamp')
         campaign_id = event.get('campaign_id')
 
-        if not event_type or not email or not timestamp or not campaign_id:
+        if not event_type or not email or not timestamp:
             logger.warning(f"Invalid event data: {event}")
             continue
 
@@ -124,6 +128,10 @@ def acumbamail_webhooks(request):
             event_type = ACUMBAMAIL_EVENTS[event_type]
         except KeyError:
             logger.warning(f"Unhandled event type: {event_type} for email: {email}")
+            continue
+
+        if event_type in (EmailEventType.SUBSCRIBE, EmailEventType.UNSUBSCRIBE):
+            logger.debug(f"Acumbamail Event received: {event_type} for email: {email} at {timestamp}")
             continue
 
         if settings.DEBUG:
