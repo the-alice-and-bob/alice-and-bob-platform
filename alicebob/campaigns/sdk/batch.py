@@ -18,6 +18,8 @@ def sync_list_from_acumbamail():
             mail_list.bounced = _list.bounced
             mail_list.save()
         except MailList.DoesNotExist:
+            print(f"La lista {_list.name} no existe en la base de datos, se creará desde Acumbamail")
+
             MailList.objects.create(
                 name=_list.name,
                 acumbamail_id=_list.identifier,
