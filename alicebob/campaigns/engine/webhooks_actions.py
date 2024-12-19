@@ -35,7 +35,7 @@ def handle_action(campaign_id: int, email: str, timestamp, event_type: EmailEven
     # Registra el evento en el modelo EmailEvent
     with atomic():
         try:
-            fixed_timestamp = datetime.utcfromtimestamp(timestamp)
+            fixed_timestamp = timezone.make_aware(timestamp)
         except Exception:
             logger.warning(f"Invalid timestamp when processing event: {event_type} for email: {email}: {timestamp}")
             fixed_timestamp = timezone.now()
