@@ -32,7 +32,6 @@ def sync_list_from_acumbamail():
     # Disable or remove mail lists that are not in Acumbamail
 
     # Those lists that were not using, then delete it
-    MailList.objects.exclude(acumbamail_id__in=existing_mail_ids, daily_emails__isnull=True).delete()
 
     # Those lists that were using, then disable it
     MailList.objects.exclude(acumbamail_id__in=existing_mail_ids).update(active=False)

@@ -48,6 +48,7 @@ class EmailCampaigns(TimeStampedModel, models.Model):
     content = models.TextField()
 
     is_sent = models.BooleanField(default=False, help_text="Indica si el email ha sido enviado.", db_index=True)
+    is_draft = models.BooleanField(default=True, help_text="Indica si el email es un borrador.", db_index=True)
 
     send_date = models.DateTimeField(null=True, blank=True, help_text="Fecha en la que se ha enviado el email.")
     scheduled_at = models.DateTimeField(

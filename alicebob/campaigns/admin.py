@@ -60,6 +60,9 @@ class EmailCampaignsAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     )
     ordering = ['-created']
 
+    def queryset(self, request):
+        return super().queryset(request).filter(active=True)
+
     @display(description="Campaign Name")
     def campaign_name(self, obj):
         if obj.scheduled_at:
@@ -80,6 +83,7 @@ class EmailCampaignsAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
 
             # Send the email
             obj.is_sent = True
+            obj.is_draft = False
             obj.send_date = timezone.now()
             obj.schedule_at = None
             obj.save()
@@ -100,7 +104,7 @@ class MailListAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     search_fields = ['name', 'description']
     list_display = ['name', 'subscribers', 'unsubscribed', 'bounced', "active_bullet"]
     list_filter = ['name']
-    list_per_page = 10
+    list_per_page = 15
     list_max_show_all = 100
     ordering = ['-subscribers']
 

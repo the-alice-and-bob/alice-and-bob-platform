@@ -24,6 +24,7 @@ def choice_daily_email() -> EmailCampaigns:
     # Check if there are emails planned to be sent today, if so, return the first email planned to be sent today
     if email_for_today := EmailCampaigns.objects.filter(
             is_sent=False,
+            is_draft=False,
             scheduled_at=timezone.now().date(),
     ).first():
         return email_for_today
