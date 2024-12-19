@@ -9,7 +9,6 @@ from django.utils.html import format_html
 from django.utils.translation import gettext as _
 from django.urls import URLPattern, path, reverse
 
-
 from import_export.admin import ImportExportModelAdmin
 
 from unfold.admin import ModelAdmin
@@ -41,13 +40,14 @@ class EmailCampaignsForm(ModelForm):
             raise forms.ValidationError(_("El campo mail_list es obligatorio."))
         return mail_list
 
+
 @admin.register(EmailCampaigns)
 class EmailCampaignsAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     form = EmailCampaignsForm
     import_form_class = ImportForm
     export_form_class = ExportForm
     search_fields = ['subject', 'content']
-    list_display = ['campaign_name', 'subject', 'mail_list', "is_sent", "is_draft", "scheduled_at" ]
+    list_display = ['campaign_name', 'subject', 'mail_list', "is_sent", "is_draft", "scheduled_at", "acumbamail_id"]
     fieldsets = (
         (
             _("Campaign Info"), {
@@ -63,6 +63,14 @@ class EmailCampaignsAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
             _("Schedule"), {
                 'fields': (
                     'scheduled_at',
+                )
+            }
+        ),
+        (
+            _("Internals"), {
+                'fields': (
+                    'acumbamail_id',
+                    'is_sent'
                 )
             }
         )
@@ -144,7 +152,6 @@ class MailListAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
 
     def acumbamail_id(self, obj):
         return format_html(f'<a href="https://acumbamail.com/app/list/{obj.acumbamail_id}/" target="_blank">{obj.acumbamail_id}</a>')
-
 
     #
     #     def action_button(self, obj):
