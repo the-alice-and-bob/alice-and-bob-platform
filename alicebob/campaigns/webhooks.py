@@ -9,11 +9,10 @@ from django.utils.timezone import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from celery_app import app as background
 from alicebob_sdk.decorators import *
-
-from .models import EmailEventType
+from celery_app import app as background
 from .engine.webhooks_actions import handle_action
+from .models import EmailEventType
 
 logger = logging.getLogger(__name__)
 
@@ -54,36 +53,63 @@ def acumbamail_webhooks(request):
     Payload Example:
     {
         "1":
-        {
-            "email_key": "f64f8ed342c8ae988bfba6f74f210b90",
-            "timestamp": 1734439351.0,
-            "campaign_id": 2990070,
-            "email": "daniel@abirtone.com",
-            "list_id": 1035387,
-            "subscriber_fields":
             {
+                "email_key": "f64f8ed342c8ae988bfba6f74f210b90",
+                "timestamp": 1734439351.0,
+                "campaign_id": 2990070,
                 "email": "daniel@abirtone.com",
-                "name": "Daniel"
+                "list_id": 1035387,
+                "subscriber_fields":
+                {
+                    "email": "daniel@abirtone.com",
+                    "name": "Daniel"
+                },
+                "event": "opens"
             },
-            "event": "opens"
-        },
         "2":
-        {
-            "email_key": "f64f8ed342c8ae988bfba6f74f210b90",
-            "timestamp": 1734439351.0,
-            "campaign_id": 2990070,
-            "email": "daniel@abirtone.com",
-            "list_id": 1035387,
-            "subscriber_fields":
             {
+                "email_key": "f64f8ed342c8ae988bfba6f74f210b90",
+                "timestamp": 1734439351.0,
+                "campaign_id": 2990070,
                 "email": "daniel@abirtone.com",
-                "name": "Daniel"
-            },
-            "event": "opens"
-        }
+                "list_id": 1035387,
+                "subscriber_fields":
+                {
+                    "email": "daniel@abirtone.com",
+                    "name": "Daniel"
+                },
+                "event": "opens"
+            }
     }
-    
     """
+
+    """
+    Other format:
+    
+    {
+        "event": "subscribes",
+        "timestamp": 1734617180.0,
+        "subscriber_fields": {
+            "email": "alvaro@garciajaen.com"
+        },
+        "email": "alvaro@garciajaen.com",
+        "list_id": 1036941
+    }
+    """
+
+    # Distinguish between single event and list of events
+    if not events:
+        return JsonResponse({'error': 'No events found in the payload.'}, status=400)
+
+    # If the first-event sub-dict is a number, it's a list of events
+    event_keys = list(events.keys())
+
+    if event_keys[0].isdigit():
+        events = events
+
+    else:
+        events = {str(i+1): events[i] for i in range(len(events))}
+
     for event in events.values():
         event_type = event.get('event')
         email = event.get('email')

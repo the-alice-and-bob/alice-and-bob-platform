@@ -50,6 +50,9 @@ def create_send_campaign_email(email_campaign_id: int | EmailCampaigns):
     :type email_campaign_id: int | EmailCampaigns
     :return: None
     """
+    if not email_campaign_id:
+        logger.error(f"Invalid email campaign ID: {email_campaign_id}")
+        return
 
     if isinstance(email_campaign_id, EmailCampaigns):
         instance = email_campaign_id

@@ -1,12 +1,13 @@
 from typing import List
 
+from django import forms
 from django.contrib import admin
+from django.utils import timezone
 from django.forms import ModelForm
 from django.shortcuts import redirect
-from django.urls import URLPattern, path, reverse
-from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import gettext as _
+from django.urls import URLPattern, path, reverse
 
 
 from import_export.admin import ImportExportModelAdmin
@@ -20,7 +21,6 @@ from celery_app import app as background_tasks
 from alicebob_sdk import celery_or_function
 from awesome_admin.mixing import RRSSOnlyMixin
 
-from .sdk import sync_list_from_acumbamail
 from .models import EmailCampaigns, MailList
 from .engine import create_send_campaign_email
 
@@ -34,6 +34,12 @@ class EmailCampaignsForm(ModelForm):
         }
         required_fields = ['subject', 'content', 'mail_list']
 
+    def clean_mail_list(self):
+        # Asegurar que `mail_list` no sea None o vacío
+        mail_list = self.cleaned_data.get('mail_list')
+        if not mail_list:
+            raise forms.ValidationError(_("El campo mail_list es obligatorio."))
+        return mail_list
 
 @admin.register(EmailCampaigns)
 class EmailCampaignsAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
@@ -46,10 +52,10 @@ class EmailCampaignsAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
         (
             _("Campaign Info"), {
                 'fields': (
+                    'is_draft',
                     'subject',
                     'content',
                     'mail_list'
-                    'is_draft'
                 )
             }
         ),
