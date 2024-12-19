@@ -1,15 +1,15 @@
 from django.conf import settings
-from django.shortcuts import render
-from django.db.models import Sum, F
 
-from academy.models import Student, Sells
 from news.models import News
+from campaigns.models import EmailCampaigns
+from academy.models import Student, Sells
 
 
 def dashboard_callback(request, context: dict):
     students_count = Student.objects.count()
     sales_count = Sells.objects.count()
-    news_count = News.objects.count()
+    # news_count = News.objects.count()
+    emails_count = EmailCampaigns.objects.count()
 
     latest_students_enrolled = {
         "headers": ["Nombre", "Apellido", "Email", "Fecha de registro"],
@@ -63,7 +63,8 @@ def dashboard_callback(request, context: dict):
     context.update({
         'students_count': students_count,
         'sales_count': sales_count,
-        'news_count': news_count,
+        # 'news_count': news_count,
+        'emails_count': emails_count,
         'latest_students': latest_students_enrolled,
         'latest_sales': latest_sales,
         'table_engagement': table_engagement
