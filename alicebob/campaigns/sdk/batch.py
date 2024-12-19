@@ -10,6 +10,7 @@ def sync_list_from_acumbamail():
 
     # Get all mail lists from Acumbamail and keep their IDs
     for _list in ac.get_mail_lists():
+        print(f"Syncing list {_list.name}")
 
         try:
             mail_list = MailList.objects.get(acumbamail_id=_list.identifier)

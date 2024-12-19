@@ -137,6 +137,19 @@ class Product(TimeStampedModel, models.Model):
         return f"{self.product_name}"
 
 
+class Lead(TimeStampedModel, models.Model):
+    email = models.EmailField(max_length=800, unique=True)
+    ezy_id = models.IntegerField(null=True, db_index=True)
+    tags = models.ManyToManyField(Tag, related_name='leads_tags', blank=True)
+
+    history = HistoricalRecords()
+
+    class Meta:
+        db_table = 'leads'
+        verbose_name = 'Lead'
+        verbose_name_plural = 'Leads'
+
+
 class Student(TimeStampedModel, models.Model):
     """
     id	Id of the student.
@@ -238,6 +251,7 @@ class Student(TimeStampedModel, models.Model):
 
         if auto_save:
             student.update_score()  # Recalcula el total_score
+
 
 class Sells(TimeStampedModel, models.Model):
     subject = models.CharField(max_length=400, null=True)

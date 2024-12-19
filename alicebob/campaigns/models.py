@@ -29,6 +29,7 @@ class MailList(TimeStampedModel, models.Model):
     bounced = models.IntegerField(default=0)
 
     users = models.ManyToManyField(Student, related_name="mail_lists", blank=True)
+    leads = models.ManyToManyField("academy.Lead", related_name="mail_lists", blank=True)
 
     active = models.BooleanField(default=True)
 
