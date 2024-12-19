@@ -1,5 +1,8 @@
 import logging
 
+from datetime import datetime
+
+from django.utils import timezone
 from django.db.transaction import atomic
 
 from academy.models import Student
@@ -31,12 +34,18 @@ def handle_action(campaign_id: int, email: str, timestamp, event_type: EmailEven
 
     # Registra el evento en el modelo EmailEvent
     with atomic():
+        try:
+            fixed_timestamp = datetime.utcfromtimestamp(timestamp)
+        except Exception:
+            logger.warning(f"Invalid timestamp when processing event: {event_type} for email: {email}: {timestamp}")
+            fixed_timestamp = timezone.now()
+
         EmailEvent.objects.create(
             campaign=campaign,
             student=student,
             email=email,
             event_type=EmailEventType.OPEN,
-            timestamp=timestamp
+            timestamp=fixed_timestamp
         )
 
         campaign.increment_stat(event_type)
