@@ -22,9 +22,11 @@ from celery_app import app as background_task
 
 logger = logging.getLogger("db")
 
+
 def error_response(message: str, status: int = 400) -> JsonResponse:
     """Helper function to return error responses"""
     return JsonResponse({'error': message}, status=status)
+
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -47,6 +49,7 @@ def new_signup(request):
         logger.error(f"Error processing new signup: {e}")
         return error_response("Failed to process new signup")
 
+
 @csrf_exempt
 @require_http_methods(['POST'])
 @authorize
@@ -61,6 +64,7 @@ def new_product_enrollment(request):
     except Exception as e:
         logger.error(f"Error processing new product enrollment: {e}")
         return error_response("Failed to process new product enrollment")
+
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -92,6 +96,7 @@ def new_sale(request):
         logger.error(f"Error processing new sale: {e}")
         return error_response("Failed to process new sale")
 
+
 @csrf_exempt
 @require_http_methods(['POST'])
 @authorize
@@ -106,6 +111,7 @@ def course_completed(request):
     except Exception as e:
         logger.error(f"Error processing course completion: {e}")
         return error_response("Failed to process course completion")
+
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -122,6 +128,7 @@ def chapter_completed(request):
         logger.error(f"Error processing chapter completion: {e}")
         return error_response("Failed to process chapter completion")
 
+
 @csrf_exempt
 @require_http_methods(['POST'])
 @authorize
@@ -137,6 +144,7 @@ def lesson_completed(request):
         logger.error(f"Error processing lesson completion: {e}")
         return error_response("Failed to process lesson completion")
 
+
 @csrf_exempt
 @require_http_methods(['POST'])
 @authorize
@@ -146,11 +154,12 @@ def quiz_completed(request):
     This webhook is triggered when a user completes a quiz.
     """
     try:
-        ezycourse_quiz_completed(request.json)
+        # ezycourse_quiz_completed(request.json)
         return JsonResponse({'message': 'Quiz Completed Webhook'})
     except Exception as e:
         logger.error(f"Error processing quiz completion: {e}")
         return error_response("Failed to process quiz completion")
+
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -191,6 +200,7 @@ def subscribe_to_email_list(request):
     except Exception as e:
         logger.error(f"Failed to subscribe user to email list: {e}")
         return error_response("Failed to subscribe user to email list")
+
 
 __all__ = (
     'new_signup', 'new_product_enrollment', 'new_sale', 'course_completed', 'chapter_completed', 'quiz_completed', 'lesson_completed',

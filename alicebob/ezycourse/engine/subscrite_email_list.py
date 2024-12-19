@@ -54,6 +54,6 @@ def subscribe_user_to_mail_list(name: str, email: str):
                 mail_list.save()
 
         ac = AcumbamailAPI()
-        ac.add_subscriber(email=email, name=name, list_id=mail_list.id)
+        ac.add_subscriber(email=email, name=name, list_id=mail_list.acumbamail_id)
 
         logger.info(f"User {name} subscribed to mail list {mail_list.name}")
