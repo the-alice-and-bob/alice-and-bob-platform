@@ -48,7 +48,9 @@ class EmailCampaignsAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
                 'fields': (
                     'subject',
                     'content',
-                    'mail_list')
+                    'mail_list'
+                    'is_draft'
+                )
             }
         ),
         (
