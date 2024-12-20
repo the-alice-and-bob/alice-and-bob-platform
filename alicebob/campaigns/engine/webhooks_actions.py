@@ -34,8 +34,12 @@ def handle_action(campaign_id: int, email: str, timestamp, event_type: EmailEven
 
     # Registra el evento en el modelo EmailEvent
     with atomic():
+        # Timestamp example: 1734683227.0
         try:
-            fixed_timestamp = timezone.make_aware(timestamp)
+            fixed_timestamp = datetime.fromtimestamp(timestamp)
+
+            # Fix to django USE_TZ=True
+            fixed_timestamp = timezone.make_aware(fixed_timestamp)
         except Exception:
             logger.warning(f"Invalid timestamp when processing event: {event_type} for email: {email}: {timestamp}")
             fixed_timestamp = timezone.now()
