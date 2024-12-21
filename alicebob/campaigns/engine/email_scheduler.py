@@ -79,7 +79,7 @@ def create_send_campaign_email(email_campaign_id: int | EmailCampaigns, auto_sav
         logger.error(f"Invalid campaign ID returned from Acumbamail: {ret}")
         return
 
-    instance.campaign_id = ret
+    instance.acumbamail_id = ret
 
     if auto_save:
         instance.save()
@@ -95,11 +95,10 @@ def send_daily_email():
         return
 
     with atomic():
+        create_send_campaign_email(email, auto_save=False)
+
         email.is_sent = True
         email.send_date = timezone.now()
-
-        create_send_campaign_email(email)
-
         email.save()
 
 
