@@ -31,6 +31,7 @@ def choice_daily_email() -> EmailCampaigns:
 
     # If there are no emails planned to be sent today, return the first email on the queue. We prioritize older emails. field: created
     return EmailCampaigns.objects.filter(
+        is_draft=False,
         is_sent=False,
     ).order_by('created').first()
 
@@ -71,6 +72,12 @@ def create_send_campaign_email(email_campaign_id: int | EmailCampaigns, auto_sav
         scheduled_date=instance.scheduled_at,
         list_id=instance.mail_list.acumbamail_id,
     )
+
+    try:
+        ret = int(ret)
+    except ValueError:
+        logger.error(f"Invalid campaign ID returned from Acumbamail: {ret}")
+        return
 
     instance.campaign_id = ret
 
