@@ -91,7 +91,7 @@ def send_daily_email():
         email.is_sent = True
         email.send_date = timezone.now()
 
-        create_send_campaign_email(email, auto_save=False)
+        create_send_campaign_email(email)
 
         email.save()
 
