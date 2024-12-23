@@ -12,9 +12,9 @@ from django.urls import URLPattern, path, reverse
 from import_export.admin import ImportExportModelAdmin
 
 from unfold.admin import ModelAdmin
+from unfold.decorators import display
 from unfold.contrib.forms.widgets import WysiwygWidget
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
-from unfold.decorators import display
 
 from celery_app import app as background_tasks
 from alicebob_sdk import celery_or_function
@@ -47,22 +47,23 @@ class EmailCampaignsAdmin(RRSSOnlyMixin, ModelAdmin, ImportExportModelAdmin):
     import_form_class = ImportForm
     export_form_class = ExportForm
     search_fields = ['subject', 'content']
-    list_display = ['campaign_name', 'subject', 'mail_list', "is_sent", "is_draft", "scheduled_at", "acumbamail_id"]
+    list_display = ['campaign_name', 'subject', 'mail_list', "is_sent", "is_draft", "scheduled_at", "preferred_day", "send_date"]
     fieldsets = (
         (
-            _("Campaign Info"), {
+            _("Publishing"), {
                 'fields': (
                     'is_draft',
-                    'subject',
-                    'content',
-                    'mail_list'
+                    'preferred_day',
+                    'scheduled_at'
                 )
             }
         ),
         (
-            _("Schedule"), {
+            _("Content"), {
                 'fields': (
-                    'scheduled_at',
+                    'subject',
+                    'content',
+                    'mail_list'
                 )
             }
         ),

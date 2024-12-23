@@ -1,5 +1,7 @@
+import random
 import logging
 
+from django.conf import settings
 from django.utils import timezone
 
 from django.db.transaction import atomic
@@ -25,7 +27,20 @@ def choice_daily_email() -> EmailCampaigns:
     if email_for_today := EmailCampaigns.objects.filter(
             is_sent=False,
             is_draft=False,
-            scheduled_at=timezone.now().date(),
+            # Cualquiera que esté planificado para hoy. Coger el primero
+            scheduled_at=timezone.now().today()
+    ).first():
+        return email_for_today
+
+    # If not email for today, then check the day of the week is: monday, tuesday, wednesday, thursday, friday, saturday, sunday.
+    # And return the first email planned to be sent today
+    day_of_the_week = timezone.now().today().strftime('%A').lower()
+
+    if email_for_today := EmailCampaigns.objects.filter(
+            is_sent=False,
+            is_draft=False,
+            # Cualquiera que esté planificado para hoy
+            preferred_day=day_of_the_week
     ).first():
         return email_for_today
 
@@ -64,14 +79,17 @@ def create_send_campaign_email(email_campaign_id: int | EmailCampaigns, auto_sav
         except EmailCampaigns.DoesNotExist:
             raise Exception(f"Email campaign not found with id {email_campaign_id}")
 
-    acu = AcumbamailAPI()
-    ret = acu.send_many(
-        campaign_name=f"[{timezone.now().today().strftime('%Y-%m-%d')}] {instance.subject}",
-        subject=instance.subject,
-        body=instance.content,
-        scheduled_date=instance.scheduled_at,
-        list_id=instance.mail_list.acumbamail_id,
-    )
+    if not settings.DEBUG:
+        acu = AcumbamailAPI()
+        ret = acu.send_many(
+            campaign_name=f"[{timezone.now().today().strftime('%Y-%m-%d')}] {instance.subject}",
+            subject=instance.subject,
+            body=instance.content,
+            scheduled_date=instance.scheduled_at,
+            list_id=instance.mail_list.acumbamail_id,
+        )
+    else:
+        ret = random.randint(1, 9000)
 
     try:
         ret = int(ret)

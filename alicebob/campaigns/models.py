@@ -52,8 +52,25 @@ class EmailCampaigns(TimeStampedModel, models.Model):
     is_draft = models.BooleanField(default=True, help_text="Indica si el email es un borrador.", db_index=True)
 
     send_date = models.DateTimeField(null=True, blank=True, help_text="Fecha en la que se ha enviado el email.")
-    scheduled_at = models.DateTimeField(
-        null=True, blank=True, help_text="Fecha y hora en la que se programó el envío del email.", db_index=True
+    scheduled_at = models.DateField(
+        null=True, blank=True, db_index=True, help_text="Fecha en la que se programó el envío del email."
+    )
+
+    # día preferido para enviar el email: Lunes, Martes, Miércoles, Jueves, Viernes, Sábado, Domingo
+    preferred_day = models.CharField(
+        max_length=10,
+        choices=[
+            ("any", "Cualquier día"),
+            ("monday", "Lunes"),
+            ("tuesday", "Martes"),
+            ("wednesday", "Miércoles"),
+            ("thursday", "Jueves"),
+            ("friday", "Viernes"),
+            ("saturday", "Sábado"),
+            ("sunday", "Domingo"),
+        ],
+        default="any",
+        help_text="Día preferido para enviar el email."
     )
 
     acumbamail_id = models.IntegerField(unique=True, null=True, blank=True, db_index=True)
