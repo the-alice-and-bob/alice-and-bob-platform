@@ -25,6 +25,16 @@ class AcumbamailAPI:
         self.auth_token = auth_token or settings.ACUMBAMAIL_TOKEN
         self.base_url = "https://acumbamail.com/api/1/"
 
+    def _ret_id(self, data: dict | str | int) -> int:
+        try:
+            return int(data)
+        except (ValueError, TypeError):
+            # Not an integer. Is it a dict?
+            if type(data) is dict:
+                return data['id']
+
+            raise ValueError(f"Invalid data type: {type(data)}")
+
     def _call_api(self, endpoint, data=None):
         if data is None:
             data = {}
@@ -51,7 +61,7 @@ class AcumbamailAPI:
         except ValueError:
             return response.text
 
-    def send_one(self, from_email, to_email, body, subject, category=''):
+    def send_one(self, from_email, to_email, body, subject, category='') -> int:
         data = {
             "from_email": from_email,
             "to_email": to_email,
@@ -59,7 +69,9 @@ class AcumbamailAPI:
             "subject": subject,
             "category": category,
         }
-        return self._call_api("sendOne", data)
+        self._ret_id(
+            self._call_api("sendOne", data)
+        )
 
     def send_many(
             self,
@@ -69,8 +81,8 @@ class AcumbamailAPI:
             list_id: int,
             sender_name: str = None,
             sender_email: str = None,
-            scheduled_date: datetime = None,
-    ):
+            scheduled_date: datetime | None = None,
+    ) -> int:
         sender_name = sender_name or settings.ACUMBAMAIL_SENDER_NAME
         sender_email = sender_email or settings.ACUMBAMAIL_SENDER_EMAIL
 
@@ -98,7 +110,9 @@ class AcumbamailAPI:
             # (Formato : YYYY-MM-DD HH:MM)
             data["date_send"] = scheduled_date.strftime("%Y-%m-%d %H:%M")
 
-        return self._call_api("createCampaign", data)
+        return self._ret_id(
+            self._call_api("createCampaign", data)
+        )
 
     def add_subscriber(self, email: str, name: str, list_id: str | int):
 
@@ -130,7 +144,9 @@ class AcumbamailAPI:
             "description": description,
             "country": settings.ACUMBAMAIL_SENDER_COUNTRY,
         }
-        return self._call_api("createList", data)
+        return self._ret_id(
+            self._call_api("createList", data)
+        )
 
     def get_mail_lists(self) -> Iterable[MailList]:
         for k, v in self._call_api("getLists").items():

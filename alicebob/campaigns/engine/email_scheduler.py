@@ -62,6 +62,7 @@ def create_send_campaign_email(email_campaign_id: int | EmailCampaigns, auto_sav
     The email campaign is sent using the Acumbamail API, and the campaign ID returned is saved
     to the `campaign_id` attribute of the corresponding EmailCampaigns instance.
 
+    :param auto_save: Whether to automatically save the EmailCampaigns instance after sending the email.
     :param email_campaign_id: The campaign identifier, either an integer ID corresponding to a database entry or an EmailCampaigns instance.
     :type email_campaign_id: int | EmailCampaigns
     :return: None
@@ -90,12 +91,6 @@ def create_send_campaign_email(email_campaign_id: int | EmailCampaigns, auto_sav
         )
     else:
         ret = random.randint(1, 9000)
-
-    try:
-        ret = int(ret)
-    except ValueError:
-        logger.error(f"Invalid campaign ID returned from Acumbamail: {ret}")
-        return
 
     instance.acumbamail_id = ret
 
