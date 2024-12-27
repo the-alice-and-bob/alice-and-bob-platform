@@ -36,7 +36,7 @@ class MailList(TimeStampedModel, models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return f"{self.name} ({self.subscribers})"
+        return f"{self.name} ({self.subscribers - self.unsubscribed})"
 
     class Meta:
         verbose_name = "Mail List"
