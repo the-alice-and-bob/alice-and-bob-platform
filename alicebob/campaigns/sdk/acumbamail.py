@@ -51,8 +51,9 @@ class AcumbamailAPI:
                 time.sleep(10)
                 continue
 
-            if response.status_code != 200:
-                print(f"Acumbamail API error: {response.text}")
+            # response code is not a 2xx
+            if not response.ok:
+                print(f"Acumbamail API error: {response.text}. Response code: {response.status_code}")
 
             break
 
