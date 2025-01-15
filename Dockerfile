@@ -7,7 +7,7 @@ RUN addgroup -S alicebob && \
 
 ENV POETRY_VIRTUALENVS_CREATE=false
 
-RUN pip install --disable-pip-version-check --no-cache-dir -U pip poetry
+RUN pip install --disable-pip-version-check --no-cache-dir -U pip poetry poetry-plugin-export
 
 COPY ./pyproject.toml pyproject.toml
 COPY ./poetry.lock poetry.lock
