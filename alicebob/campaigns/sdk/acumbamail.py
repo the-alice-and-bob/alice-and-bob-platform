@@ -90,7 +90,9 @@ class AcumbamailAPI:
         html_content = f"""<body>
 {body}
     <div style="margin-top: 40px; width: 100%; text-align: center; font-size: 60%; text-color: #dedede;">
-        Aunque te echaremos de menos, si no quieres recibir más correos puedes <a style="text-color: #b1b1b1; font-size: 70%;" href="*|UNSUBSCRIBE_URL|*">darte de baja aquí.</a>
+        <p>Aunque te echaremos de menos, si no quieres recibir más correos puedes <a style="text-color: #b1b1b1; font-size: 70%;" href="*|UNSUBSCRIBE_URL|*">darte de baja aquí.</a></p>
+        <p>Si te das de baja, no recibirás los emails, las novedades y las ofertas de que doy de vez en cuando. </p>
+        <p>Además, no podrás leer el email en ningún otro sitio. Email que no recibas, email que te pierdes.</p>
     </div>
 </body>
         """
