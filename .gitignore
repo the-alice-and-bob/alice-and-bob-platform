@@ -244,3 +244,9 @@ _old/
 pruebas/
 /_old/
 /pruebas/
+.DS_Store
+exported_data/Product-2024-11-25.csv
+exported_data/Tag-2024-11-25.csv
+.env.old
+.env.prod
+.compose_env

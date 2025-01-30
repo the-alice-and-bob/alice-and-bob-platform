@@ -185,11 +185,15 @@ def subscribe_to_email_list(request):
     data = request.json
 
     try:
-        name = data['params']['response']['Nombre']
         email = data['params']['response']['Email']
     except KeyError as e:
         logger.error(f"Received invalid data from the form: missing field {e}")
         return error_response("Invalid form data: missing required fields")
+    
+    try:
+        name = data['params']['response']['Nombre']
+    except KeyError as e:
+        name = ""
 
     try:
         if settings.DEBUG:
