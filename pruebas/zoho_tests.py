@@ -1,5 +1,4 @@
-from alicebob.alicebob_sdk.crm.zoho import ZohoCRM, Lead, PurchaseOrder, PurchaseOrderStatus, PurchaseItem
-from alicebob_sdk.crm import ProductSummary, Buyer
+from awesome_zohocrm import ZohoCRM, Lead, PurchaseOrder, PurchaseOrderStatus, PurchaseItem
 
 
 # ZOHO_CLIENT_ID = "1000.TGMSYJ8A4MIZQ6Z2P0903US5X90OBT"
@@ -9,12 +8,21 @@ from alicebob_sdk.crm import ProductSummary, Buyer
 def main():
     crm = ZohoCRM()
 
+
     # product_module = crm.get_products_module()
     # for index, product in enumerate(product_module.get_all()):
     #     print(f"{index}: {product}")
 
     # Purchase orders
-    # purchase_orders_module = crm.get_purchase_orders_module()
+    purchase_orders_module = crm.get_purchase_orders_module()
+    # print(purchase_orders_module.get_by_user_id_and_product_id(738692000000679037, 738692000000695355))
+    # print(purchase_orders_module.get_by_id(738692000001214028))
+    # a = list(purchase_orders_module.get_by_user_id(738692000001214028)
+    # print(a)
+    # return
+    for p in purchase_orders_module.get_by_user_id_and_subject(738692000000679037, "301 - Ocultación y ejecución de código Python"):
+        print(p)
+
     #
     # fields = purchase_orders_module.get_module_fields()
     #

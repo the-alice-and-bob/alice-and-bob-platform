@@ -64,7 +64,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Home",
+                "module_function": "Home",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -121,7 +121,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Leads",
+                "module_function": "Leads",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -178,7 +178,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Contacts",
+                "module_function": "Contacts",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -235,7 +235,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Accounts",
+                "module_function": "Accounts",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -292,7 +292,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Products",
+                "module_function": "Products",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -349,7 +349,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "PurchaseOrders",
+                "module_function": "PurchaseOrders",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -402,7 +402,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "CustomModule1",
+                "module_function": "CustomModule1",
                 "profile_count": 1,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -455,7 +455,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Quotes",
+                "module_function": "Quotes",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -512,7 +512,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Reports",
+                "module_function": "Reports",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -565,7 +565,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Invoices",
+                "module_function": "Invoices",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -618,7 +618,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Approvals",
+                "module_function": "Approvals",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -671,7 +671,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Meetings",
+                "module_function": "Meetings",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -724,7 +724,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Calls",
+                "module_function": "Calls",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -777,7 +777,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Deals",
+                "module_function": "Deals",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -834,7 +834,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "SalesOrders",
+                "module_function": "SalesOrders",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -887,7 +887,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Tasks",
+                "module_function": "Tasks",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -944,7 +944,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "SalesInbox",
+                "module_function": "SalesInbox",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1001,7 +1001,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Dashboards",
+                "module_function": "Dashboards",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1058,7 +1058,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Feeds",
+                "module_function": "Feeds",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1115,7 +1115,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Campaigns",
+                "module_function": "Campaigns",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1172,7 +1172,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Vendors",
+                "module_function": "Vendors",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1225,7 +1225,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Visits",
+                "module_function": "Visits",
                 "profile_count": 1,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1282,7 +1282,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "PriceBooks",
+                "module_function": "PriceBooks",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1335,7 +1335,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Social",
+                "module_function": "Social",
                 "profile_count": 1,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1392,7 +1392,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Cases",
+                "module_function": "Cases",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1449,7 +1449,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Solutions",
+                "module_function": "Solutions",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1506,7 +1506,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Documents",
+                "module_function": "Documents",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1563,7 +1563,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Forecasts",
+                "module_function": "Forecasts",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1616,7 +1616,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "InvoicedItems",
+                "module_function": "InvoicedItems",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1672,7 +1672,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "EmailSentiment",
+                "module_function": "EmailSentiment",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1725,7 +1725,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "PurchaseItems",
+                "module_function": "PurchaseItems",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1781,7 +1781,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Email Analytics",
+                "module_function": "Email Analytics",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1834,7 +1834,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Email Template Analytics",
+                "module_function": "Email Template Analytics",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1887,7 +1887,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Google AdWords",
+                "module_function": "Google AdWords",
                 "profile_count": 1,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -1941,7 +1941,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "DealHistory",
+                "module_function": "DealHistory",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2001,7 +2001,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "OrderedItems",
+                "module_function": "OrderedItems",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2057,7 +2057,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "QuotedItems",
+                "module_function": "QuotedItems",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2113,7 +2113,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Notes",
+                "module_function": "Notes",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2166,7 +2166,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Attachments",
+                "module_function": "Attachments",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2219,7 +2219,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Emails",
+                "module_function": "Emails",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2272,7 +2272,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Actions Performed",
+                "module_function": "Actions Performed",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2325,7 +2325,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "ShiftHours",
+                "module_function": "ShiftHours",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2378,7 +2378,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Forecast Quotas",
+                "module_function": "Forecast Quotas",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2431,7 +2431,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Forecast Items",
+                "module_function": "Forecast Items",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2484,7 +2484,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Forecast Groups",
+                "module_function": "Forecast Groups",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2537,7 +2537,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "LockingInformation",
+                "module_function": "LockingInformation",
                 "profile_count": 2,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2585,7 +2585,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "Projects",
+                "module_function": "Projects",
                 "profile_count": 0,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2638,7 +2638,7 @@ def main():
                 "public_fields_configured": false,
                 "arguments":
                 [],
-                "module_name": "CustomModule2",
+                "module_function": "CustomModule2",
                 "profile_count": 1,
                 "business_card_field_limit": 5,
                 "parent_module":
@@ -2747,7 +2747,7 @@ def main():
                 "viewable": true,
                 "api_name": "Purchase_Orders",
                 "public_fields_configured": false,
-                "module_name": "PurchaseOrders",
+                "module_function": "PurchaseOrders",
                 "chart_view_supported": true,
                 "custom_view":
                 {
